@@ -13,3 +13,11 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Always use LTS version for every library you include in the project.
 - Don't use outdated or deprecated libraries.
 - Always follow the official documentation and best practices for each library you use.
+
+# SPEC-DRIVEN WORKFLOW
+- Every feature has its own spec in `specs/NNN-name.md` (001, 002, ...). New specs are created by copying `specs/_template.md` and using the next free number. Numbers are never reused.
+- Status flow: Draft → Approved → Done. Only the owner sets `Approved`.
+- Implement ONLY specs with status `Approved`. Never implement `Draft`.
+- Never change a spec's Goal/Requirements/Acceptance criteria while implementing. If something is unclear or wrong, stop and ask.
+- Build nothing listed in "Out of scope".
+- When done: tick the acceptance criteria, set status to `Done`, run `pnpm lint` and `pnpm typecheck`.

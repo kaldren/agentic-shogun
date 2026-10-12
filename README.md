@@ -38,4 +38,4 @@ Native mobile apps (Expo) can come later, reusing the same Supabase backend.
 
 ## Status
 
-Early development. This is the starting point for the MVP.
+Early development. This is the starting point for the MVP. Features are specified in `specs/` before implementation.
