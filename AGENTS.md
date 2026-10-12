@@ -16,6 +16,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # SPEC-DRIVEN WORKFLOW
 - Every feature has its own spec in `specs/NNN-name.md` (001, 002, ...). New specs are created by copying `specs/_template.md` and using the next free number. Numbers are never reused.
+- One spec = one feature = one branch. The branch is named exactly like the spec file without `.md` (e.g. `003-quiz-engine`). The spec is written and implemented on that branch, and merged into `main` when it's `Done`.
+- To write a new spec, use the `write-spec` skill.
 - Status flow: Draft → Approved → Done. Only the owner sets `Approved`.
 - Implement ONLY specs with status `Approved`. Never implement `Draft`.
 - Never change a spec's Goal/Requirements/Acceptance criteria while implementing. If something is unclear or wrong, stop and ask.
