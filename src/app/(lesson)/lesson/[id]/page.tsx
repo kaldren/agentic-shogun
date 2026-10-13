@@ -27,6 +27,7 @@ async function Lesson({ params }: Pick<PageProps<"/lesson/[id]">, "params">) {
       lessonId={lesson.id}
       title={lesson.title}
       exercises={lesson.exercises}
+      initialProgress={lesson.progress}
     />
   );
 }

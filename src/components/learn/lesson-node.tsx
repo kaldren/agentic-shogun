@@ -25,11 +25,14 @@ export function LessonNode({
   id,
   title,
   state,
+  inProgress = false,
   index,
 }: {
   id: string;
   title: string;
   state: LessonState;
+  // Started but not finished (spec 009): the badge says "Continue".
+  inProgress?: boolean;
   index: number;
 }) {
   const offset = OFFSETS[index % OFFSETS.length];
@@ -67,7 +70,7 @@ export function LessonNode({
           {state === "current" ? (
             <>
               <span className="relative rounded-xl border-2 bg-white px-3 py-1 text-sm font-bold text-green-800 uppercase">
-                Start
+                {inProgress ? "Continue" : "Start"}
                 <span
                   aria-hidden
                   className="absolute -bottom-1.5 left-1/2 size-2.5 -translate-x-1/2 rotate-45 border-r-2 border-b-2 bg-white"

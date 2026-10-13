@@ -92,6 +92,39 @@ export type Database = {
           },
         ];
       };
+      lesson_attempts: {
+        Row: {
+          done: string[];
+          lesson_id: string;
+          queue: string[];
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          done?: string[];
+          lesson_id: string;
+          queue: string[];
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          done?: string[];
+          lesson_id?: string;
+          queue?: string[];
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lesson_attempts_lesson_id_fkey";
+            columns: ["lesson_id"];
+            isOneToOne: false;
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       lesson_progress: {
         Row: {
           completed_at: string;

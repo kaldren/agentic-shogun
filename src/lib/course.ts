@@ -53,6 +53,21 @@ export async function getCompletedLessonIds(): Promise<Set<string>> {
   return new Set(data.map(({ lesson_id }) => lesson_id));
 }
 
+// Ids of the lessons the signed-in user has started but not finished
+// (spec 009). Row-level security only returns their own attempts.
+export async function getInProgressLessonIds(): Promise<Set<string>> {
+  const user = await getCurrentUser();
+  if (!user) return new Set();
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lesson_attempts")
+    .select("lesson_id");
+  if (error) throw error;
+
+  return new Set(data.map(({ lesson_id }) => lesson_id));
+}
+
 // Number of lessons the signed-in user has completed.
 export async function getCompletedLessonCount(): Promise<number> {
   return (await getCompletedLessonIds()).size;

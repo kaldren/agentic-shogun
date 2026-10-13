@@ -28,9 +28,9 @@ import {
 import {
   ArrowRightIcon,
   CheckIcon,
-  MaximizeIcon,
-  MinimizeIcon,
-  ScanIcon,
+  Maximize2Icon,
+  Minimize2Icon,
+  LocateFixedIcon,
   Trash2Icon,
   XIcon,
   ZoomInIcon,
@@ -316,7 +316,7 @@ function Builder({
               variant="secondary"
               onClick={() => setFullscreen(false)}
             >
-              <MinimizeIcon aria-hidden />
+              <Minimize2Icon aria-hidden />
               Exit full screen
             </Button>
           </div>
@@ -437,7 +437,7 @@ function Builder({
                   void fitView({ padding: 0.2, maxZoom: 1, duration })
                 }
               >
-                <ScanIcon aria-hidden />
+                <LocateFixedIcon aria-hidden />
               </Button>
               <Button
                 type="button"
@@ -448,9 +448,9 @@ function Builder({
                 onClick={() => setFullscreen(!fullscreen)}
               >
                 {fullscreen ? (
-                  <MinimizeIcon aria-hidden />
+                  <Minimize2Icon aria-hidden />
                 ) : (
-                  <MaximizeIcon aria-hidden />
+                  <Maximize2Icon aria-hidden />
                 )}
               </Button>
             </Panel>
