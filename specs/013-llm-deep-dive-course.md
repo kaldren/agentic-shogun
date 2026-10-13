@@ -1,6 +1,6 @@
 # 013: Deep Dive into LLMs like ChatGPT course
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -52,7 +52,7 @@ Give software developers a course that explains how LLMs like ChatGPT are built 
 - [x] The course shows 4 sections and 20 lessons in the order above. The first lesson is current and the others are locked.
 - [x] Every lesson has 5–8 exercises and ends with a developer scenario. Every section uses at least three exercise types.
 - [x] Every exercise can be answered correctly and has an explanation. Every lesson can be played to "Lesson complete!".
-- [ ] Every fact and number in the content has been checked against the video.
+- [ ] Every fact and number in the content has been checked against the video. (Not done: the owner marked the spec Done without this check.)
 - [x] `content/course-llm-deep-dive.md` and the database content match.
 - [x] Applying the migrations to an empty Supabase project creates the course with all its exercises.
 - [x] `pnpm lint` and `pnpm typecheck` pass.
