@@ -19,6 +19,7 @@ import {
   type AnswerResult,
 } from "@/app/(lesson)/lesson/[id]/actions";
 import { ArchitectureBoard } from "@/components/lesson/architecture-board";
+import { CategorizeBoard } from "@/components/lesson/categorize-board";
 import { LessonComplete } from "@/components/lesson/lesson-complete";
 import { MultipleChoice } from "@/components/lesson/multiple-choice";
 import { OrderingList } from "@/components/lesson/ordering-list";
@@ -196,6 +197,14 @@ function Player({
               avoidOrder={revealedOrders[exercise.id] ?? null}
               onAnswerChange={setAnswer}
             />
+          ) : exercise.type === "categorize" ? (
+            <CategorizeBoard
+              key={step}
+              exercise={exercise}
+              result={feedback?.type === "categorize" ? feedback : null}
+              disabled={feedback !== null || isChecking}
+              onAnswerChange={setAnswer}
+            />
           ) : (
             <SystemBuilder
               key={step}
@@ -358,6 +367,14 @@ function Correction({
           ))}
         </ol>
       </div>
+    );
+  }
+  if (exercise.type === "categorize" && result.type === "categorize") {
+    // Each wrong item shows where it belongs.
+    return (
+      <p className="font-semibold">
+        Items marked with an X show the group they belong in.
+      </p>
     );
   }
   if (exercise.type === "system_builder" && result.type === "system_builder") {

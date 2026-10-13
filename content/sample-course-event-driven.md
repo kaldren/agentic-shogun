@@ -1,8 +1,9 @@
 # Sample section: Event-driven systems
 
-Test content for spec 008. It becomes the seed data in the database.
+Test content for specs 008 and 012. It becomes the seed data in the database.
 It is section 2 of the Software developers course (see `content/sample-course-developers.md`).
 In system builder exercises, nodes marked **✓** belong on the canvas; the others are distractors.
+In categorize exercises, items are listed in the order the learner sees, with their correct group after **→**.
 
 - **Role:** Software developers
 - **Course:** AI apps on Azure
@@ -37,3 +38,19 @@ In system builder exercises, nodes marked **✓** belong on the canvas; the othe
 - Azure Functions → Azure Communication Services
 
 **Explanation:** The shop frontend on Static Web Apps sends each order to the API on Container Apps. The API puts the order on a Service Bus queue and answers the customer right away. Azure Functions takes orders from the queue at its own pace, saves them in Cosmos DB and sends the confirmation email with Communication Services. If the worker is busy or down, orders wait safely in the queue.
+
+### 1.2 (categorize)
+
+**Question:** Where does each piece of work belong?
+
+**Groups:** Order API (answers right away), Background worker
+
+**Items, as shown:**
+
+- Save the order in the database → Background worker
+- Check that the order is valid → Order API
+- Send the confirmation email → Background worker
+- Put the order on the queue → Order API
+- Reply with an order number → Order API
+
+**Explanation:** The API does only the quick work: it checks the order, puts it on the queue and replies, so customers never wait. Saving the order and sending the email are slower, so the worker does them later, at its own pace.
