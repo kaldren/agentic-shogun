@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { CurrentUser } from "@/lib/auth";
+import { initials } from "@/lib/utils";
 
 export function UserMenu({ user }: { user: CurrentUser }) {
   const [isPending, startTransition] = useTransition();
@@ -57,13 +58,4 @@ export function UserMenu({ user }: { user: CurrentUser }) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]!.toUpperCase())
-    .join("");
 }

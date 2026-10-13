@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth";
 import { getCurrentRole } from "@/lib/profile";
 
@@ -48,13 +48,12 @@ async function CurrentRole() {
       <p className="text-muted-foreground max-w-prose text-lg">
         Your lessons are on the way.
       </p>
-      <Button
-        variant="secondary"
-        render={<Link href="/welcome" />}
-        nativeButton={false}
+      <Link
+        href="/welcome"
+        className={buttonVariants({ variant: "secondary" })}
       >
         Change role
-      </Button>
+      </Link>
     </>
   );
 }
