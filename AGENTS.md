@@ -8,13 +8,19 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-
 # RULES TO ALWAYS FOLLOW
+
 - Always use LTS version for every library you include in the project.
 - Don't use outdated or deprecated libraries.
 - Always follow the official documentation and best practices for each library you use.
 
+# DESIGN
+
+- `DESIGN.md` is the single source of truth for UI: colors, gradients, fonts, typography, spacing, shapes and components. Read it before building or changing any UI, and follow it exactly.
+- Never introduce colors, fonts or styles that aren't in `DESIGN.md`. If something is missing, stop and ask.
+
 # SPEC-DRIVEN WORKFLOW
+
 - Every feature has its own spec in `specs/NNN-name.md` (001, 002, ...). New specs are created by copying `specs/_template.md` and using the next free number. Numbers are never reused.
 - One spec = one feature = one branch. The branch is named exactly like the spec file without `.md` (e.g. `003-quiz-engine`). The spec is written and implemented on that branch, and merged into `main` when it's `Done`.
 - To write a new spec, use the `write-spec` skill.
