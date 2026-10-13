@@ -29,6 +29,8 @@ import {
   ArrowRightIcon,
   CheckIcon,
   MaximizeIcon,
+  MinimizeIcon,
+  ScanIcon,
   Trash2Icon,
   XIcon,
   ZoomInIcon,
@@ -108,7 +110,9 @@ function Builder({
   const [announcement, setAnnouncement] = useState("");
   const fitPending = useRef(false);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const workspaceRef = useRef<HTMLDivElement>(null);
   const duration = useReducedMotion() ? 0 : 200;
+  const [fullscreen, setFullscreen] = useFullscreen(workspaceRef);
 
   const name = (id: string) =>
     exercise.nodes.find((node) => node.id === id)?.label ?? id;
@@ -141,6 +145,14 @@ function Builder({
     fitPending.current = false;
     void fitView({ padding: 0.2, maxZoom: 1, duration });
   }, [nodes.length, fitView, duration]);
+
+  // The canvas changes size when full screen opens or closes.
+  useEffect(() => {
+    const frame = requestAnimationFrame(
+      () => void fitView({ padding: 0.2, maxZoom: 1, duration }),
+    );
+    return () => cancelAnimationFrame(frame);
+  }, [fullscreen, fitView, duration]);
 
   function addNode(id: string, position?: Point) {
     const info = exercise.nodes.find((node) => node.id === id);
@@ -277,188 +289,247 @@ function Builder({
         </p>
       </div>
 
-      <section
-        aria-labelledby={`${exercise.id}-palette`}
-        className="flex flex-col gap-3"
-      >
-        <h2
-          id={`${exercise.id}-palette`}
-          className="text-muted-foreground text-xs font-bold tracking-wider uppercase"
-        >
-          Services
-        </h2>
-        {palette.length > 0 ? (
-          <ul className="flex flex-wrap gap-2">
-            {palette.map((node) => (
-              <li key={node.id}>
-                <PaletteItem
-                  id={paletteDomId(node.id)}
-                  nodeId={node.id}
-                  label={node.label}
-                  role={node.role}
-                  disabled={disabled}
-                  onPress={() => pressPaletteItem(node.id)}
-                />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-muted-foreground">
-            All services are on the canvas.
-          </p>
-        )}
-      </section>
-
+      {/* Services, canvas and the selected-service panel: the part that
+          opens full screen. */}
       <div
-        ref={canvasRef}
-        tabIndex={-1}
-        role="group"
-        aria-label="Canvas"
+        ref={workspaceRef}
+        role={fullscreen ? "dialog" : undefined}
+        aria-modal={fullscreen || undefined}
+        aria-label={fullscreen ? "Canvas, full screen" : undefined}
+        onKeyDown={(event) => {
+          // Escape first clears a selection (React Flow), then closes.
+          if (event.key === "Escape" && fullscreen && !selected) {
+            setFullscreen(false);
+          }
+        }}
         className={cn(
-          "relative h-96 overflow-hidden rounded-2xl border-2 bg-white transition-all duration-150 ease-out outline-none md:h-[28rem]",
-          over && "border-green-500 bg-green-50",
+          "flex flex-col gap-6",
+          fullscreen &&
+            "fixed inset-0 z-50 gap-4 overflow-y-auto bg-white p-4 md:p-6",
         )}
       >
-        <ReactFlow<ServiceNode, ConnectionEdge>
-          nodes={shownNodes}
-          edges={shownEdges}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          onNodesChange={(changes) =>
-            setNodes((current) => applyNodeChanges(changes, current))
-          }
-          onEdgesChange={(changes) =>
-            setEdges((current) => applyEdgeChanges(changes, current))
-          }
-          onConnect={({ source, target }) => connect(source, target)}
-          isValidConnection={({ source, target }) =>
-            canConnect(connections, source, target)
-          }
-          onDelete={onDelete}
-          nodesDraggable={!disabled}
-          nodesConnectable={!disabled}
-          elementsSelectable={!disabled}
-          deleteKeyCode={disabled ? null : ["Backspace", "Delete"]}
-          multiSelectionKeyCode={null}
-          selectionKeyCode={null}
-          zoomOnScroll={false}
-          zoomOnDoubleClick={false}
-          preventScrolling={false}
-          minZoom={0.3}
-          maxZoom={1.5}
-          defaultViewport={{ x: 24, y: 24, zoom: 1 }}
-          colorMode="light"
-          ariaLabelConfig={ariaLabels}
-        >
-          <Background
-            variant={BackgroundVariant.Dots}
-            gap={20}
-            size={2}
-            color="var(--color-green-200)"
-          />
-          <Panel position="top-right" className="flex flex-col gap-2">
+        {fullscreen && (
+          <div className="flex items-center gap-3">
+            <p className="flex-1 font-bold">{exercise.question}</p>
             <Button
               type="button"
               variant="secondary"
-              size="icon"
-              aria-label="Zoom in"
-              onClick={() => void zoomIn({ duration })}
+              onClick={() => setFullscreen(false)}
             >
-              <ZoomInIcon aria-hidden />
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              size="icon"
-              aria-label="Zoom out"
-              onClick={() => void zoomOut({ duration })}
-            >
-              <ZoomOutIcon aria-hidden />
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              size="icon"
-              aria-label="Fit all services in view"
-              onClick={() =>
-                void fitView({ padding: 0.2, maxZoom: 1, duration })
-              }
-            >
-              <MaximizeIcon aria-hidden />
-            </Button>
-          </Panel>
-        </ReactFlow>
-        {nodes.length === 0 && (
-          <p className="text-muted-foreground pointer-events-none absolute inset-0 grid place-items-center p-16 text-center">
-            Drag services here, or tap one to add it.
-          </p>
-        )}
-      </div>
-
-      {selected && (
-        <section
-          aria-label={`Selected: ${selected.data.label}`}
-          className="flex flex-col gap-3 rounded-2xl border-2 border-green-200 bg-green-50 p-4 md:p-5"
-        >
-          <p className="font-semibold">
-            {selected.data.label}{" "}
-            <span className="text-muted-foreground font-normal">
-              ({selected.data.role})
-            </span>
-          </p>
-          <div className="flex flex-wrap items-end gap-3">
-            <label className="flex min-w-48 flex-1 flex-col gap-1.5">
-              <span className="text-sm font-semibold">Connect to…</span>
-              <select
-                value={target}
-                disabled={targets.length === 0}
-                onChange={(event) =>
-                  setPick({ from: selected.id, to: event.target.value })
-                }
-                className="border-input bg-muted focus-visible:ring-ring/50 h-11 rounded-xl border-2 px-4 transition-all duration-150 ease-out outline-none focus:border-green-500 focus:bg-white focus-visible:ring-3 disabled:opacity-50"
-              >
-                <option value="">
-                  {targets.length > 0
-                    ? "Choose a service"
-                    : "No other services to connect"}
-                </option>
-                {targets.map((node) => (
-                  <option key={node.id} value={node.id}>
-                    {node.data.label} ({node.data.role})
-                  </option>
-                ))}
-              </select>
-            </label>
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={!target}
-              onClick={() => {
-                connect(selected.id, target);
-                setPick({ from: "", to: "" });
-              }}
-            >
-              Connect
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() =>
-                // The panel disappears, so focus the service back in the
-                // palette once it is rendered there.
-                void deleteElements({ nodes: [{ id: selected.id }] }).then(() =>
-                  requestAnimationFrame(() =>
-                    document.getElementById(paletteDomId(selected.id))?.focus(),
-                  ),
-                )
-              }
-            >
-              <Trash2Icon aria-hidden />
-              Remove from canvas
+              <MinimizeIcon aria-hidden />
+              Exit full screen
             </Button>
           </div>
+        )}
+
+        <section
+          aria-labelledby={`${exercise.id}-palette`}
+          className="flex flex-col gap-3"
+        >
+          <h2
+            id={`${exercise.id}-palette`}
+            className="text-muted-foreground text-xs font-bold tracking-wider uppercase"
+          >
+            Services
+          </h2>
+          {palette.length > 0 ? (
+            <ul
+              className={cn(
+                "flex gap-2",
+                // Full screen keeps the services to one scrolling row, so the
+                // canvas gets the space.
+                fullscreen ? "-mx-1 overflow-x-auto px-1 pb-2" : "flex-wrap",
+              )}
+            >
+              {palette.map((node) => (
+                <li key={node.id} className="shrink-0">
+                  <PaletteItem
+                    id={paletteDomId(node.id)}
+                    nodeId={node.id}
+                    label={node.label}
+                    role={node.role}
+                    disabled={disabled}
+                    onPress={() => pressPaletteItem(node.id)}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground">
+              All services are on the canvas.
+            </p>
+          )}
         </section>
-      )}
+
+        <div
+          ref={canvasRef}
+          tabIndex={-1}
+          role="group"
+          aria-label="Canvas"
+          className={cn(
+            "relative overflow-hidden rounded-2xl border-2 bg-white transition-all duration-150 ease-out outline-none",
+            fullscreen ? "min-h-80 flex-1" : "h-96 md:h-[28rem]",
+            over && "border-green-500 bg-green-50",
+          )}
+        >
+          <ReactFlow<ServiceNode, ConnectionEdge>
+            nodes={shownNodes}
+            edges={shownEdges}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            onNodesChange={(changes) =>
+              setNodes((current) => applyNodeChanges(changes, current))
+            }
+            onEdgesChange={(changes) =>
+              setEdges((current) => applyEdgeChanges(changes, current))
+            }
+            onConnect={({ source, target }) => connect(source, target)}
+            isValidConnection={({ source, target }) =>
+              canConnect(connections, source, target)
+            }
+            onDelete={onDelete}
+            nodesDraggable={!disabled}
+            nodesConnectable={!disabled}
+            elementsSelectable={!disabled}
+            deleteKeyCode={disabled ? null : ["Backspace", "Delete"]}
+            multiSelectionKeyCode={null}
+            selectionKeyCode={null}
+            zoomOnScroll={false}
+            zoomOnDoubleClick={false}
+            preventScrolling={false}
+            minZoom={0.3}
+            maxZoom={1.5}
+            defaultViewport={{ x: 24, y: 24, zoom: 1 }}
+            colorMode="light"
+            ariaLabelConfig={ariaLabels}
+          >
+            <Background
+              variant={BackgroundVariant.Dots}
+              gap={20}
+              size={2}
+              color="var(--color-green-200)"
+            />
+            <Panel position="top-right" className="flex flex-col gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                aria-label="Zoom in"
+                onClick={() => void zoomIn({ duration })}
+              >
+                <ZoomInIcon aria-hidden />
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                aria-label="Zoom out"
+                onClick={() => void zoomOut({ duration })}
+              >
+                <ZoomOutIcon aria-hidden />
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                aria-label="Fit all services in view"
+                onClick={() =>
+                  void fitView({ padding: 0.2, maxZoom: 1, duration })
+                }
+              >
+                <ScanIcon aria-hidden />
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                aria-label={fullscreen ? "Exit full screen" : "Full screen"}
+                aria-pressed={fullscreen}
+                onClick={() => setFullscreen(!fullscreen)}
+              >
+                {fullscreen ? (
+                  <MinimizeIcon aria-hidden />
+                ) : (
+                  <MaximizeIcon aria-hidden />
+                )}
+              </Button>
+            </Panel>
+          </ReactFlow>
+          {nodes.length === 0 && (
+            <p className="text-muted-foreground pointer-events-none absolute inset-0 grid place-items-center p-16 text-center">
+              Drag services here, or tap one to add it.
+            </p>
+          )}
+        </div>
+
+        {selected && (
+          <section
+            aria-label={`Selected: ${selected.data.label}`}
+            className="flex flex-col gap-3 rounded-2xl border-2 border-green-200 bg-green-50 p-4 md:p-5"
+          >
+            <p className="font-semibold">
+              {selected.data.label}{" "}
+              <span className="text-muted-foreground font-normal">
+                ({selected.data.role})
+              </span>
+            </p>
+            <div className="flex flex-wrap items-end gap-3">
+              <label className="flex min-w-48 flex-1 flex-col gap-1.5">
+                <span className="text-sm font-semibold">Connect to…</span>
+                <select
+                  value={target}
+                  disabled={targets.length === 0}
+                  onChange={(event) =>
+                    setPick({ from: selected.id, to: event.target.value })
+                  }
+                  className="border-input bg-muted focus-visible:ring-ring/50 h-11 rounded-xl border-2 px-4 transition-all duration-150 ease-out outline-none focus:border-green-500 focus:bg-white focus-visible:ring-3 disabled:opacity-50"
+                >
+                  <option value="">
+                    {targets.length > 0
+                      ? "Choose a service"
+                      : "No other services to connect"}
+                  </option>
+                  {targets.map((node) => (
+                    <option key={node.id} value={node.id}>
+                      {node.data.label} ({node.data.role})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={!target}
+                onClick={() => {
+                  connect(selected.id, target);
+                  setPick({ from: "", to: "" });
+                }}
+              >
+                Connect
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() =>
+                  // The panel disappears, so focus the service back in the
+                  // palette once it is rendered there.
+                  void deleteElements({ nodes: [{ id: selected.id }] }).then(
+                    () =>
+                      requestAnimationFrame(() =>
+                        document
+                          .getElementById(paletteDomId(selected.id))
+                          ?.focus(),
+                      ),
+                  )
+                }
+              >
+                <Trash2Icon aria-hidden />
+                Remove from canvas
+              </Button>
+            </div>
+          </section>
+        )}
+      </div>
 
       {(edges.length > 0 || missing.length > 0 || missingNodes.length > 0) && (
         <section
@@ -826,6 +897,46 @@ function useDropTarget(
   }, [ref, enabled]);
 
   return over && enabled;
+}
+
+// Shows `ref` full screen. Uses the browser's Fullscreen API where it can
+// (desktop, Android, iPad); elsewhere (iPhone) the element just covers the
+// page with CSS. Returns whether it is open, and a setter.
+function useFullscreen(
+  ref: RefObject<HTMLElement | null>,
+): [boolean, (open: boolean) => void] {
+  const [open, setOpen] = useState(false);
+
+  // The browser can close full screen on its own (Escape, back gesture).
+  useEffect(() => {
+    const onChange = () => {
+      if (!document.fullscreenElement) setOpen(false);
+    };
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  // Without the Fullscreen API, stop the page behind from scrolling.
+  useEffect(() => {
+    if (!open || document.fullscreenElement) return;
+    const { overflow } = document.body.style;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = overflow;
+    };
+  }, [open]);
+
+  function set(next: boolean) {
+    setOpen(next);
+    const element = ref.current;
+    if (next && element && document.fullscreenEnabled) {
+      element.requestFullscreen().catch(() => {});
+    } else if (!next && document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+
+  return [open, set];
 }
 
 const reducedMotion = "(prefers-reduced-motion: reduce)";

@@ -23,6 +23,7 @@ Let learners build a system themselves, like in n8n: they read a use case, drag 
   - Correct: green panel, "Great job!", the explanation and "Continue".
   - Wrong: wrong connections and distractor nodes are marked red with an X icon, correct ones green with a check icon, missing connections are shown as dashed arrows. Red panel with the explanation and "Got it". The exercise is asked again at the end of the lesson, starting with an empty canvas.
 - The canvas fits its frame on load and can be panned and zoomed inside the frame; the page itself never scrolls horizontally.
+- A full-screen button (square icon) on the canvas opens the services, the canvas and the selected-service panel full screen, and the same button or Escape closes it. A separate button fits all services in view. (Added by the owner during implementation.)
 - Sample content: a new section 2 "Event-driven systems" in the Software developers course ("AI apps on Azure", from spec 007), with one lesson "Build an order pipeline" and one system builder exercise. The course allows one course per role, so this is a section, not a new course:
   - Nodes: Azure Static Web Apps (Shop frontend), Azure Container Apps (Order API), Azure Service Bus (Order queue), Azure Functions (Order processor), Azure Cosmos DB (Orders database), Azure Communication Services (Confirmation email)
   - Connections: Static Web Apps → Container Apps, Container Apps → Service Bus, Service Bus → Functions, Functions → Cosmos DB, Functions → Communication Services
@@ -43,6 +44,7 @@ Let learners build a system themselves, like in n8n: they read a use case, drag 
 - [x] Changing a node name or the scenario in the database shows the new text after a reload.
 - [ ] Multiple-choice and architecture lessons from specs 006 and 007 still work unchanged.
 - [ ] Motion respects `prefers-reduced-motion`.
+- [ ] The canvas opens full screen and closes again with the button or Escape, on desktop and on a phone, and everything can still be added and connected there.
 - [ ] No horizontal page scroll at 360px, 768px and 1280px.
 - [x] `pnpm lint` and `pnpm typecheck` pass.
 
