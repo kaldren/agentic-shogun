@@ -15,7 +15,7 @@ export async function getCurrentRole(): Promise<Role | null> {
     .from("profiles")
     .select("role")
     .eq("id", user.id)
-    .maybeSingle<{ role: string }>();
+    .maybeSingle();
   if (error) throw error;
 
   return findRole(data?.role);

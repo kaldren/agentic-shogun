@@ -1,6 +1,6 @@
 # 005: Learning path
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -25,16 +25,16 @@ Show each learner their role's course as a Duolingo-style path of lessons on `/l
 
 ## Acceptance criteria
 
-- [ ] A user with role Marketing sees the sample course from the database: one section with two lessons.
-- [ ] Changing a lesson title in the database (e.g. in the Supabase dashboard) shows the new title on `/learn` after a reload, without a deploy.
-- [ ] Applying the migrations and seed data to an empty Supabase project creates the tables and the sample courses.
-- [ ] A signed-in user can read content but can't insert, update or delete it (row-level security is on); a signed-out request can't read it.
-- [ ] With no progress, the first lesson is "current" and all others are "locked".
-- [ ] The path-state logic gives the correct states for a given set of completed ids (checked with at least one example where some lessons are done).
-- [ ] Clicking the current lesson goes to `/lesson/[id]`; locked lessons do nothing and are announced as locked to screen readers.
-- [ ] A user with any other role (e.g. Software developers) sees the "coming soon" message.
-- [ ] The path looks right and has no horizontal scroll at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] A user with role Marketing sees the sample course from the database: one section with two lessons.
+- [x] Changing a lesson title in the database (e.g. in the Supabase dashboard) shows the new title on `/learn` after a reload, without a deploy.
+- [x] Applying the migrations and seed data to an empty Supabase project creates the tables and the sample courses.
+- [x] A signed-in user can read content but can't insert, update or delete it (row-level security is on); a signed-out request can't read it.
+- [x] With no progress, the first lesson is "current" and all others are "locked".
+- [x] The path-state logic gives the correct states for a given set of completed ids (checked with at least one example where some lessons are done).
+- [x] Clicking the current lesson goes to `/lesson/[id]`; locked lessons do nothing and are announced as locked to screen readers.
+- [x] A user with any other role (e.g. Software developers) sees the "coming soon" message.
+- [x] The path looks right and has no horizontal scroll at 360px, 768px and 1280px.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 
