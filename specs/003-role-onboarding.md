@@ -1,6 +1,6 @@
 # 003: Role onboarding
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
