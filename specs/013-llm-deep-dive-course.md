@@ -1,6 +1,6 @@
 # 013: Deep Dive into LLMs like ChatGPT course
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
