@@ -1,6 +1,6 @@
 # 010: Multiple courses per role
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
