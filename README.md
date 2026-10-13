@@ -46,6 +46,13 @@ Early development. This is the starting point for the MVP. Features are specifie
 2. Copy `.env.example` to `.env.local` and fill in the Supabase values (see below).
 3. Start the dev server: `pnpm dev`
 
+## Database (Supabase)
+
+The schema lives in `supabase/migrations`, and local seed data in `supabase/seed.sql`. Every table has row-level security.
+
+- **Production:** link the project once with `supabase link --project-ref <project-ref>`, then apply new migrations with `supabase db push`.
+- **Local (optional, needs Docker):** `supabase start` runs Postgres and Auth locally and applies the migrations and seed data. `supabase db reset` starts over. To use it, set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` to the values `supabase status` prints.
+
 ## Authentication (Google + Supabase)
 
 Users sign in with Google through Supabase Auth.
@@ -79,3 +86,4 @@ Set the same variables in Vercel for Production and Preview.
 - `src/proxy.ts` refreshes the session cookie on every request.
 - The "Sign in with Google" button starts the OAuth flow (PKCE). Google returns to `/auth/callback`, which exchanges the code for a session and redirects back to the original page.
 - On the server, use `getCurrentUser()` from `@/lib/auth` to read the signed-in user.
+- Only the landing page (`/`) and `/auth/*` are public. The proxy sends signed-out visitors to `/?next=<page>`, and signed-in users from `/` into the app. Pages still check the user on the server.
