@@ -1,6 +1,6 @@
 # 005: Learning path
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
