@@ -1,6 +1,6 @@
 # 010: Multiple courses per role
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -20,16 +20,16 @@ Let one role have more than one course, so Software developers can take "Deep Di
 
 ## Acceptance criteria
 
-- [ ] Applying the migrations to an empty Supabase project works, and existing courses, sections, lessons and progress are unchanged.
-- [ ] With two courses for a role in the database, a user of that role sees the switcher on `/learn`, with the first course selected.
-- [ ] Picking the other course shows its sections and lessons. After a reload, and on another browser, the same course is still selected.
-- [ ] Lessons done in course A are still done after switching to course B and back.
-- [ ] A role with one course shows no switcher. A role with no course shows the "coming soon" message.
-- [ ] Changing role on `/welcome` (via "Change role") shows the first course of the new role on `/learn`.
-- [ ] A user can't read or change another user's current course (row-level security is on). They can't pick a course that belongs to a different role.
-- [ ] The switcher works with the keyboard only, and its state is announced to screen readers.
-- [ ] No horizontal scroll at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] Applying the migrations to an empty Supabase project works, and existing courses, sections, lessons and progress are unchanged.
+- [x] With two courses for a role in the database, a user of that role sees the switcher on `/learn`, with the first course selected.
+- [x] Picking the other course shows its sections and lessons. After a reload, and on another browser, the same course is still selected.
+- [x] Lessons done in course A are still done after switching to course B and back.
+- [x] A role with one course shows no switcher. A role with no course shows the "coming soon" message.
+- [x] Changing role on `/welcome` (via "Change role") shows the first course of the new role on `/learn`.
+- [x] A user can't read or change another user's current course (row-level security is on). They can't pick a course that belongs to a different role.
+- [x] The switcher works with the keyboard only, and its state is announced to screen readers.
+- [x] No horizontal scroll at 360px, 768px and 1280px.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 
