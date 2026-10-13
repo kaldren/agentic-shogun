@@ -21,6 +21,7 @@ import {
 import { ArchitectureBoard } from "@/components/lesson/architecture-board";
 import { LessonComplete } from "@/components/lesson/lesson-complete";
 import { MultipleChoice } from "@/components/lesson/multiple-choice";
+import { OrderingList } from "@/components/lesson/ordering-list";
 import { QuitLessonButton } from "@/components/lesson/quit-lesson-button";
 import { StartOverButton } from "@/components/lesson/start-over-button";
 import { SystemBuilder } from "@/components/lesson/system-builder";
@@ -69,6 +70,11 @@ function Player({
   // Counts "Continue" presses, to move focus to each new question and to
   // start a repeated exercise empty.
   const [step, setStep] = useState(0);
+  // Correct orders of ordering exercises the learner got wrong, so a
+  // repeat never starts already solved (spec 011).
+  const [revealedOrders, setRevealedOrders] = useState<
+    Record<string, string[]>
+  >({});
   const questionRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -94,6 +100,12 @@ function Player({
       try {
         const result = await checkAnswer(exercise.id, answered);
         setFeedback(result);
+        if (result.type === "ordering" && !result.correct) {
+          setRevealedOrders((orders) => ({
+            ...orders,
+            [exercise.id]: result.correctOrder,
+          }));
+        }
         // Save where the learner will continue. Finishing the lesson clears
         // the saved place instead. Saving is best effort: the lesson goes on
         // even if it fails.
@@ -173,6 +185,15 @@ function Player({
               exercise={exercise}
               result={feedback?.type === "architecture" ? feedback : null}
               disabled={feedback !== null || isChecking}
+              onAnswerChange={setAnswer}
+            />
+          ) : exercise.type === "ordering" ? (
+            <OrderingList
+              key={step}
+              exercise={exercise}
+              result={feedback?.type === "ordering" ? feedback : null}
+              disabled={feedback !== null || isChecking}
+              avoidOrder={revealedOrders[exercise.id] ?? null}
               onAnswerChange={setAnswer}
             />
           ) : (
@@ -322,6 +343,20 @@ function Correction({
               </li>
             ))}
         </ul>
+      </div>
+    );
+  }
+  if (exercise.type === "ordering" && result.type === "ordering") {
+    const label = (id: string) =>
+      exercise.items.find((item) => item.id === id)?.label ?? id;
+    return (
+      <div className="font-semibold">
+        <p>Correct order:</p>
+        <ol className="list-decimal pl-5">
+          {result.correctOrder.map((id) => (
+            <li key={id}>{label(id)}</li>
+          ))}
+        </ol>
       </div>
     );
   }

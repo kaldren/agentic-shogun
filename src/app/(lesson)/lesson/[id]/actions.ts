@@ -13,7 +13,8 @@ import type { Connection } from "@/lib/system-builder";
 export type Answer =
   | { type: "multiple_choice"; choice: number }
   | { type: "architecture"; placements: Placements }
-  | { type: "system_builder"; nodes: string[]; connections: Connection[] };
+  | { type: "system_builder"; nodes: string[]; connections: Connection[] }
+  | { type: "ordering"; order: string[] };
 
 export type AnswerResult = { correct: boolean; explanation: string } & (
   | { type: "multiple_choice"; correctChoice: number }
@@ -23,6 +24,7 @@ export type AnswerResult = { correct: boolean; explanation: string } & (
       correctNodes: string[];
       correctConnections: Connection[];
     }
+  | { type: "ordering"; correctOrder: string[] }
 );
 
 // Checks an answer in the database, so solutions never reach the browser
@@ -62,6 +64,15 @@ export async function checkAnswer(
       correctPlacements: solution.slots,
     };
   }
+  if (answer.type === "ordering") {
+    const solution = data.solution as { order: string[] };
+    return {
+      type: answer.type,
+      correct,
+      explanation,
+      correctOrder: solution.order,
+    };
+  }
   const solution = data.solution as {
     nodes: string[];
     connections: Connection[];
@@ -84,6 +95,8 @@ function toRpcAnswer(answer: Answer) {
       return { placements: answer.placements };
     case "system_builder":
       return { nodes: answer.nodes, connections: answer.connections };
+    case "ordering":
+      return { order: answer.order };
   }
 }
 

@@ -7,6 +7,7 @@ import {
 import { getCompletedLessonIds, getCoursesForRole } from "@/lib/course";
 import { lessonStates, type LessonState } from "@/lib/learning-path";
 import { resumeProgress, type LessonProgress } from "@/lib/lesson-progress";
+import { isOrderingContent, type OrderingContent } from "@/lib/ordering";
 import { getCurrentRole } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -29,8 +30,15 @@ export type SystemBuilderExercise = SystemBuilderContent & {
   id: string;
   type: "system_builder";
 };
+export type OrderingExercise = OrderingContent & {
+  id: string;
+  type: "ordering";
+};
 export type Exercise =
-  MultipleChoiceExercise | ArchitectureExercise | SystemBuilderExercise;
+  | MultipleChoiceExercise
+  | ArchitectureExercise
+  | SystemBuilderExercise
+  | OrderingExercise;
 
 export type PlayableLesson = {
   id: string;
@@ -114,6 +122,10 @@ async function getExercises(lessonId: string): Promise<Exercise[]> {
     if (type === "system_builder" && isSystemBuilderContent(content)) {
       const { question, scenario, nodes } = content;
       return { id, type, question, scenario, nodes };
+    }
+    if (type === "ordering" && isOrderingContent(content)) {
+      const { question, scenario, items } = content;
+      return { id, type, question, scenario, items };
     }
     throw new Error(`Exercise ${id} has invalid content for type ${type}`);
   });
