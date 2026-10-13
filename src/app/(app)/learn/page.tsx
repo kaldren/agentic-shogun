@@ -2,13 +2,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
+import { CourseSwitcher } from "@/components/learn/course-switcher";
 import { LessonNode } from "@/components/learn/lesson-node";
 import { buttonVariants } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { getCurrentUser } from "@/lib/auth";
 import {
   getCompletedLessonIds,
-  getCourseForRole,
+  getCurrentCourse,
   getInProgressLessonIds,
 } from "@/lib/course";
 import { lessonStates } from "@/lib/learning-path";
@@ -34,8 +35,8 @@ async function LearningPath() {
   const role = await getCurrentRole();
   if (!role) redirect("/welcome");
 
-  const [course, completed, inProgress] = await Promise.all([
-    getCourseForRole(role.id),
+  const [{ courses, course }, completed, inProgress] = await Promise.all([
+    getCurrentCourse(role.id),
     getCompletedLessonIds(),
     getInProgressLessonIds(),
   ]);
@@ -58,6 +59,10 @@ async function LearningPath() {
 
   return (
     <>
+      {courses.length > 1 && (
+        <CourseSwitcher courses={courses} currentId={course.id} />
+      )}
+
       <header className="flex flex-col gap-2">
         <p className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
           Your course

@@ -20,3 +20,13 @@ export function lessonStates(
   }
   return states;
 }
+
+// The course a user is learning: the one they picked, if it is still one of
+// their role's courses, otherwise the first course of the role.
+export function currentCourseId(
+  courseIds: readonly string[],
+  pickedId: string | null | undefined,
+): string | null {
+  if (pickedId && courseIds.includes(pickedId)) return pickedId;
+  return courseIds[0] ?? null;
+}
