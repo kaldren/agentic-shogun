@@ -11,7 +11,7 @@ Show each learner their role's course as a Duolingo-style path of lessons on `/l
 - Courses, sections and lessons are stored in the Supabase database. A course belongs to one role; a course has ordered sections; a section has a title and ordered lessons; a lesson has an id and a title. Exercises are added in spec 006.
 - Signed-in users can read course content. Nobody can change it from the app; content is only changed through migrations or seed data.
 - The database schema and seed data live in the repo, so a fresh Supabase project can be set up with the same content.
-- Sample content: a short course for at least two roles (Marketing and Software developers), 2 sections with 3–4 lessons each.
+- Sample content for testing: the course in `content/sample-course.md` (role Marketing, 1 section, 2 lessons) is added to the seed data. Other roles have no course yet.
 - `/learn` shows the course for the user's role:
   - At the top, a card with the current section's title and its progress (e.g. "1 / 4 lessons").
   - Below, each section with its title, followed by its lessons as round buttons laid out in a vertical zig-zag path.
@@ -25,14 +25,14 @@ Show each learner their role's course as a Duolingo-style path of lessons on `/l
 
 ## Acceptance criteria
 
-- [ ] A user with role Marketing sees the Marketing course from the database; a user with role Software developers sees theirs.
+- [ ] A user with role Marketing sees the sample course from the database: one section with two lessons.
 - [ ] Changing a lesson title in the database (e.g. in the Supabase dashboard) shows the new title on `/learn` after a reload, without a deploy.
 - [ ] Applying the migrations and seed data to an empty Supabase project creates the tables and the sample courses.
 - [ ] A signed-in user can read content but can't insert, update or delete it (row-level security is on); a signed-out request can't read it.
 - [ ] With no progress, the first lesson is "current" and all others are "locked".
 - [ ] The path-state logic gives the correct states for a given set of completed ids (checked with at least one example where some lessons are done).
 - [ ] Clicking the current lesson goes to `/lesson/[id]`; locked lessons do nothing and are announced as locked to screen readers.
-- [ ] A role without a course shows the "coming soon" message.
+- [ ] A user with any other role (e.g. Software developers) sees the "coming soon" message.
 - [ ] The path looks right and has no horizontal scroll at 360px, 768px and 1280px.
 - [ ] `pnpm lint` and `pnpm typecheck` pass.
 
