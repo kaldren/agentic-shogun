@@ -1,6 +1,6 @@
 # 002: Apply the design system
 
-**Status:** Draft
+**Status:** Done
 
 ## Goal
 
@@ -18,17 +18,17 @@ Bring the existing app in line with `DESIGN.md`, so the green-and-white look, fo
 
 ## Acceptance criteria
 
-- [ ] The "Sign in with Google" button has the green gradient, white bold text, a green-600 bottom edge, and moves down when pressed.
-- [ ] Classes such as `bg-green-100`, `text-green-800`, `bg-danger` and `bg-gradient-brand` work and produce the colors from `DESIGN.md`.
-- [ ] All text renders in Nunito, including Cyrillic text, and code renders in Geist Mono.
-- [ ] The header is white, 64px high, with a 2px bottom border, and shows the logo on the left and the sign-in button or account menu on the right.
-- [ ] The home page has the soft green-to-white background and uses the type scale from `DESIGN.md` §3.3.
-- [ ] Each `Button` variant is used or rendered once and matches its description in `DESIGN.md` §6.
-- [ ] Focus rings are visible and green on all interactive elements.
-- [ ] No hard-coded hex colors in components; they use theme classes.
-- [ ] The app looks right at 360px, 768px and 1280px widths, with no horizontal scroll.
-- [ ] The OS dark mode setting doesn't change the app's look.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] The "Sign in with Google" button has the green gradient, white bold text, a green-600 bottom edge, and moves down when pressed.
+- [x] Classes such as `bg-green-100`, `text-green-800`, `bg-danger` and `bg-gradient-brand` work and produce the colors from `DESIGN.md`.
+- [x] All text renders in Nunito, including Cyrillic text, and code renders in Geist Mono.
+- [x] The header is white, 64px high, with a 2px bottom border, and shows the logo on the left and the sign-in button or account menu on the right.
+- [x] The home page has the soft green-to-white background and uses the type scale from `DESIGN.md` §3.3.
+- [x] Each `Button` variant is used or rendered once and matches its description in `DESIGN.md` §6.
+- [x] Focus rings are visible and green on all interactive elements.
+- [x] No hard-coded hex colors in components; they use theme classes.
+- [x] The app looks right at 360px, 768px and 1280px widths, with no horizontal scroll.
+- [x] The OS dark mode setting doesn't change the app's look.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 

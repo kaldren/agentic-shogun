@@ -17,7 +17,9 @@ export function SignInButton() {
   return (
     <form action={signInWithGoogle}>
       <input type="hidden" name="next" value={next} />
-      <Button type="submit">Sign in with Google</Button>
+      <Button type="submit" aria-label="Sign in with Google">
+        Sign in<span className="max-sm:hidden">with Google</span>
+      </Button>
     </form>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { LogOutIcon } from "lucide-react";
 import { useTransition } from "react";
 
 import { signOut } from "@/app/auth/actions";
@@ -21,21 +22,21 @@ export function UserMenu({ user }: { user: CurrentUser }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="hover:bg-muted focus-visible:ring-ring/50 flex items-center gap-2 rounded-lg p-1 pr-2 outline-none focus-visible:ring-3"
+        className="hover:bg-secondary aria-expanded:bg-secondary focus-visible:ring-ring/50 flex h-11 items-center gap-2 rounded-xl p-1.5 transition-all duration-150 ease-out outline-none focus-visible:ring-3 sm:pr-3"
         aria-label="Account menu"
       >
         <Avatar>
           {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
           <AvatarFallback>{initials(user.name)}</AvatarFallback>
         </Avatar>
-        <span className="max-w-40 truncate text-sm font-medium max-sm:hidden">
+        <span className="max-w-40 truncate text-sm font-semibold max-sm:hidden">
           {user.name}
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-48">
         <DropdownMenuGroup>
           <DropdownMenuLabel>
-            <div className="text-foreground truncate font-medium">
+            <div className="text-foreground truncate font-bold">
               {user.name}
             </div>
             {user.email && (
@@ -50,6 +51,7 @@ export function UserMenu({ user }: { user: CurrentUser }) {
           disabled={isPending}
           onClick={() => startTransition(() => signOut())}
         >
+          <LogOutIcon />
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>

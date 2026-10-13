@@ -8,10 +8,13 @@ import { getCurrentUser } from "@/lib/auth";
 
 export function SiteHeader() {
   return (
-    <header className="border-b">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4">
-        <Link href="/" className="font-semibold tracking-tight">
-          Agentic Shogun
+    <header className="bg-background border-b-2">
+      <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-4 px-4 md:px-6">
+        <Link
+          href="/"
+          className="focus-visible:ring-ring/50 rounded-lg text-xl font-extrabold tracking-tight whitespace-nowrap outline-none focus-visible:ring-3"
+        >
+          Agentic <span className="text-green-700">Shogun</span>
         </Link>
         <Suspense fallback={<AuthSlotSkeleton />}>
           <AuthSlot />
@@ -33,6 +36,9 @@ async function AuthSlot() {
 // signed-in user while the session is read.
 function AuthSlotSkeleton() {
   return (
-    <div aria-hidden className="bg-muted size-8 animate-pulse rounded-full" />
+    <div
+      aria-hidden
+      className="bg-accent size-8 rounded-full motion-safe:animate-pulse"
+    />
   );
 }
