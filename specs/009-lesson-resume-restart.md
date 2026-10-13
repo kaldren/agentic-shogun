@@ -1,6 +1,6 @@
 # 009: Resume, replay and restart lessons
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
