@@ -18,6 +18,7 @@ import {
   type ArchitectureItem,
   type Placements,
 } from "@/lib/architecture";
+import { capitalize, DEFAULT_NOUN } from "@/lib/exercise-noun";
 import type { ArchitectureExercise } from "@/lib/lesson";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +42,8 @@ export function ArchitectureBoard({
   const [selected, setSelected] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState("");
 
+  // What the cards are called, e.g. "services" or "parts" (spec 013).
+  const noun = exercise.noun ?? DEFAULT_NOUN;
   const cardLabel = (id: string) => labelOf(exercise.cards, id);
   const slotLabel = (id: string) => labelOf(exercise.slots, id);
   const cardDomId = (id: string) => `${exercise.id}-card-${id}`;
@@ -60,14 +63,14 @@ export function ArchitectureBoard({
     const swapped = slotId ? placements[slotId] : undefined;
     const from = slotOf(placements, cardId);
     if (slotId === null) {
-      setAnnouncement(`${cardLabel(cardId)} moved back to the services.`);
+      setAnnouncement(`${cardLabel(cardId)} moved back to the ${noun.other}.`);
     } else if (swapped && from) {
       setAnnouncement(
         `${cardLabel(cardId)} placed in ${slotLabel(slotId)}. ${cardLabel(swapped)} moved to ${slotLabel(from)}.`,
       );
     } else if (swapped) {
       setAnnouncement(
-        `${cardLabel(cardId)} placed in ${slotLabel(slotId)}. ${cardLabel(swapped)} moved back to the services.`,
+        `${cardLabel(cardId)} placed in ${slotLabel(slotId)}. ${cardLabel(swapped)} moved back to the ${noun.other}.`,
       );
     } else {
       setAnnouncement(`${cardLabel(cardId)} placed in ${slotLabel(slotId)}.`);
@@ -106,7 +109,7 @@ export function ArchitectureBoard({
       <div className="flex flex-col gap-2">
         <p className="max-w-prose text-lg">{exercise.scenario}</p>
         <p className="text-muted-foreground text-sm">
-          Drag each service into a slot, or tap a service and then a slot.
+          Drag each {noun.one} into a slot, or tap a {noun.one} and then a slot.
         </p>
       </div>
 
@@ -118,7 +121,7 @@ export function ArchitectureBoard({
         overClassName="bg-green-50 ring-3 ring-green-200"
       >
         <h2 className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
-          Services
+          {capitalize(noun.other)}
         </h2>
         <ul className="flex flex-wrap gap-2">
           {bank.map((card) => (
@@ -195,6 +198,7 @@ export function ArchitectureBoard({
                           key={slotId}
                           slotId={slotId}
                           label={slotLabel(slotId)}
+                          emptyText={`Empty, drop a ${noun.one} here`}
                           card={
                             placed
                               ? { id: placed, label: cardLabel(placed) }
@@ -290,6 +294,7 @@ function ServiceCard({
 function Slot({
   slotId,
   label,
+  emptyText,
   card,
   selected,
   disabled,
@@ -299,6 +304,7 @@ function Slot({
 }: {
   slotId: string;
   label: string;
+  emptyText: string;
   card: ArchitectureItem | null;
   selected: boolean;
   disabled: boolean;
@@ -341,7 +347,7 @@ function Slot({
         )}
       >
         <span id={`slot-${slotId}-content`} className="flex-1">
-          {card ? card.label : "Empty, drop a service here"}
+          {card ? card.label : emptyText}
           {result === "correct" && <span className="sr-only"> (correct)</span>}
           {result === "wrong" && <span className="sr-only"> (wrong)</span>}
         </span>

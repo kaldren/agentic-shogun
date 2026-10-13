@@ -122,12 +122,12 @@ async function getExercises(lessonId: string): Promise<Exercise[]> {
       return { id, type, question: content.question, options: content.options };
     }
     if (type === "architecture" && isArchitectureContent(content)) {
-      const { question, scenario, slots, cards, flows } = content;
-      return { id, type, question, scenario, slots, cards, flows };
+      const { question, scenario, slots, cards, flows, noun } = content;
+      return { id, type, question, scenario, slots, cards, flows, noun };
     }
     if (type === "system_builder" && isSystemBuilderContent(content)) {
-      const { question, scenario, nodes } = content;
-      return { id, type, question, scenario, nodes };
+      const { question, scenario, nodes, noun } = content;
+      return { id, type, question, scenario, nodes, noun };
     }
     if (type === "ordering" && isOrderingContent(content)) {
       const { question, scenario, items } = content;

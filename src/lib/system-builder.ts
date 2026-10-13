@@ -1,6 +1,8 @@
 // System builder exercises (spec 008): learners add service nodes to a canvas
 // and connect them. Shared by the server (parsing) and the lesson player.
 
+import { isNoun, type Noun } from "./exercise-noun";
+
 export type SystemNode = { id: string; label: string; role: string };
 
 export type SystemBuilderContent = {
@@ -8,6 +10,8 @@ export type SystemBuilderContent = {
   scenario: string;
   // The palette, in a fixed order that doesn't give the answer away.
   nodes: SystemNode[];
+  // What the nodes are called; "services" if missing.
+  noun?: Noun;
 };
 
 // A directed connection from one node's output to another node's input.
@@ -79,8 +83,9 @@ export function isSystemBuilderContent(
   content: unknown,
 ): content is SystemBuilderContent {
   if (!isRecord(content)) return false;
-  const { question, scenario, nodes } = content;
+  const { question, scenario, nodes, noun } = content;
   if (
+    (noun !== undefined && !isNoun(noun)) ||
     typeof question !== "string" ||
     typeof scenario !== "string" ||
     !Array.isArray(nodes) ||

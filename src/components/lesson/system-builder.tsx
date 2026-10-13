@@ -49,6 +49,7 @@ import { flushSync } from "react-dom";
 
 import type { Answer, AnswerResult } from "@/app/(lesson)/lesson/[id]/actions";
 import { Button } from "@/components/ui/button";
+import { capitalize, DEFAULT_NOUN, type Noun } from "@/lib/exercise-noun";
 import type { SystemBuilderExercise } from "@/lib/lesson";
 import {
   canCheck,
@@ -114,6 +115,8 @@ function Builder({
   const duration = useReducedMotion() ? 0 : 200;
   const [fullscreen, setFullscreen] = useFullscreen(workspaceRef);
 
+  // What the nodes are called, e.g. "services" or "parts" (spec 013).
+  const noun = exercise.noun ?? DEFAULT_NOUN;
   const name = (id: string) =>
     exercise.nodes.find((node) => node.id === id)?.label ?? id;
   const paletteDomId = (id: string) => `${exercise.id}-palette-${id}`;
@@ -198,7 +201,7 @@ function Builder({
   }) => {
     if (removedNodes.length > 0) {
       const names = removedNodes.map(({ id }) => name(id)).join(", ");
-      setAnnouncement(`${names} moved back to the services.`);
+      setAnnouncement(`${names} moved back to the ${noun.other}.`);
     } else if (removedEdges[0]) {
       const { source, target } = removedEdges[0];
       setAnnouncement(
@@ -283,9 +286,9 @@ function Builder({
       <div className="flex flex-col gap-2">
         <p className="max-w-prose text-lg">{exercise.scenario}</p>
         <p className="text-muted-foreground text-sm">
-          Drag the services you need onto the canvas, or tap one to add it. Then
-          connect a service&apos;s output (right dot) to another service&apos;s
-          input (left dot).
+          Drag the {noun.other} you need onto the canvas, or tap one to add it.
+          Then connect a {noun.one}&apos;s output (right dot) to another{" "}
+          {noun.one}&apos;s input (left dot).
         </p>
       </div>
 
@@ -330,7 +333,7 @@ function Builder({
             id={`${exercise.id}-palette`}
             className="text-muted-foreground text-xs font-bold tracking-wider uppercase"
           >
-            Services
+            {capitalize(noun.other)}
           </h2>
           {palette.length > 0 ? (
             <ul
@@ -356,7 +359,7 @@ function Builder({
             </ul>
           ) : (
             <p className="text-muted-foreground">
-              All services are on the canvas.
+              All {noun.other} are on the canvas.
             </p>
           )}
         </section>
@@ -401,7 +404,7 @@ function Builder({
             maxZoom={1.5}
             defaultViewport={{ x: 24, y: 24, zoom: 1 }}
             colorMode="light"
-            ariaLabelConfig={ariaLabels}
+            ariaLabelConfig={ariaLabels(noun)}
           >
             <Background
               variant={BackgroundVariant.Dots}
@@ -432,7 +435,7 @@ function Builder({
                 type="button"
                 variant="secondary"
                 size="icon"
-                aria-label="Fit all services in view"
+                aria-label={`Fit all ${noun.other} in view`}
                 onClick={() =>
                   void fitView({ padding: 0.2, maxZoom: 1, duration })
                 }
@@ -457,7 +460,7 @@ function Builder({
           </ReactFlow>
           {nodes.length === 0 && (
             <p className="text-muted-foreground pointer-events-none absolute inset-0 grid place-items-center p-16 text-center">
-              Drag services here, or tap one to add it.
+              Drag {noun.other} here, or tap one to add it.
             </p>
           )}
         </div>
@@ -486,8 +489,8 @@ function Builder({
                 >
                   <option value="">
                     {targets.length > 0
-                      ? "Choose a service"
-                      : "No other services to connect"}
+                      ? `Choose a ${noun.one}`
+                      : `No other ${noun.other} to connect`}
                   </option>
                   {targets.map((node) => (
                     <option key={node.id} value={node.id}>
@@ -578,7 +581,8 @@ function Builder({
           </ul>
           {missingNodes.length > 0 && (
             <p className="text-muted-foreground">
-              Missing services: {missingNodes.map((id) => name(id)).join(", ")}
+              Missing {noun.other}:{" "}
+              {missingNodes.map((id) => name(id)).join(", ")}
             </p>
           )}
         </section>
@@ -592,15 +596,13 @@ function Builder({
 }
 
 // React Flow's screen reader texts, in the words of this exercise.
-const ariaLabels = {
-  "node.a11yDescription.default":
-    "Press Enter to select this service. Then use Connect to below the canvas, or press Delete to move it back to the services.",
-  "node.a11yDescription.keyboardDisabled":
-    "Press Enter to select this service. Then use the arrow keys to move it, Connect to below the canvas to connect it, or Delete to move it back to the services.",
+const ariaLabels = ({ one, other }: Noun) => ({
+  "node.a11yDescription.default": `Press Enter to select this ${one}. Then use Connect to below the canvas, or press Delete to move it back to the ${other}.`,
+  "node.a11yDescription.keyboardDisabled": `Press Enter to select this ${one}. Then use the arrow keys to move it, Connect to below the canvas to connect it, or Delete to move it back to the ${other}.`,
   "edge.a11yDescription.default":
     "Press Enter to select this connection, then Delete to remove it.",
   "handle.ariaLabel": "Connection point",
-};
+});
 
 function marker(mark: Mark | "missing", selected: boolean) {
   return { type: MarkerType.ArrowClosed, color: strokeColor(mark, selected) };
