@@ -1,6 +1,6 @@
 # 011: Ordering exercise
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -32,18 +32,18 @@ Let learners show they understand a process by putting its steps in the right or
 
 ## Acceptance criteria
 
-- [ ] The RAG lesson shows the ordering exercise after the architecture exercise, with the 5 cards in a mixed order.
-- [ ] Cards can be reordered by dragging with a mouse and on a touch screen.
-- [ ] Cards can be reordered with the keyboard only, and screen readers announce each move.
-- [ ] "Check" is disabled until a card has been moved.
-- [ ] The correct order shows the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
-- [ ] A wrong order marks each card right or wrong (icon and color), shows the correct order and the red panel, and the exercise comes back reshuffled before the lesson ends.
-- [ ] The correct order is not sent to the browser before the user presses "Check".
-- [ ] Changing a step's text in the database shows the new text after a reload.
-- [ ] Multiple-choice, architecture and system builder exercises from specs 006–008 still work unchanged, and resuming a lesson (spec 009) works with the new type.
-- [ ] Motion respects `prefers-reduced-motion`.
-- [ ] No horizontal page scroll at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] The RAG lesson shows the ordering exercise after the architecture exercise, with the 5 cards in a mixed order.
+- [x] Cards can be reordered by dragging with a mouse and on a touch screen.
+- [x] Cards can be reordered with the keyboard only, and screen readers announce each move.
+- [x] "Check" is disabled until a card has been moved.
+- [x] The correct order shows the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
+- [x] A wrong order marks each card right or wrong (icon and color), shows the correct order and the red panel, and the exercise comes back reshuffled before the lesson ends.
+- [x] The correct order is not sent to the browser before the user presses "Check".
+- [x] Changing a step's text in the database shows the new text after a reload.
+- [x] Multiple-choice, architecture and system builder exercises from specs 006–008 still work unchanged, and resuming a lesson (spec 009) works with the new type.
+- [x] Motion respects `prefers-reduced-motion`.
+- [x] No horizontal page scroll at 360px, 768px and 1280px.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 
