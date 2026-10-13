@@ -1,6 +1,8 @@
 // Architecture exercises (spec 007): cards are placed into the slots of a
 // diagram. Shared by the server (parsing) and the lesson player (moves).
 
+import { isNoun, type Noun } from "./exercise-noun";
+
 export type ArchitectureItem = { id: string; label: string };
 
 // A flow is a chain of stages shown top to bottom with arrows between them.
@@ -14,6 +16,8 @@ export type ArchitectureContent = {
   slots: ArchitectureItem[];
   cards: ArchitectureItem[];
   flows: ArchitectureFlow[];
+  // What the cards are called; "services" if missing.
+  noun?: Noun;
 };
 
 // Slot id → card id.
@@ -59,8 +63,9 @@ export function isArchitectureContent(
   content: unknown,
 ): content is ArchitectureContent {
   if (!isRecord(content)) return false;
-  const { question, scenario, slots, cards, flows } = content;
+  const { question, scenario, slots, cards, flows, noun } = content;
   if (
+    (noun !== undefined && !isNoun(noun)) ||
     typeof question !== "string" ||
     typeof scenario !== "string" ||
     !isItemList(slots) ||

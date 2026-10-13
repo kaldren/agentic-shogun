@@ -48,14 +48,14 @@ Give software developers a course that explains how LLMs like ChatGPT are built 
 
 ## Acceptance criteria
 
-- [ ] A Software developers user sees "Deep Dive into LLMs like ChatGPT" in the course switcher, first, and "AI apps on Azure" second. Their progress in "AI apps on Azure" is unchanged.
-- [ ] The course shows 4 sections and 20 lessons in the order above. The first lesson is current and the others are locked.
-- [ ] Every lesson has 5–8 exercises and ends with a developer scenario. Every section uses at least three exercise types.
-- [ ] Every exercise can be answered correctly and has an explanation. Every lesson can be played to "Lesson complete!".
+- [x] A Software developers user sees "Deep Dive into LLMs like ChatGPT" in the course switcher, first, and "AI apps on Azure" second. Their progress in "AI apps on Azure" is unchanged.
+- [x] The course shows 4 sections and 20 lessons in the order above. The first lesson is current and the others are locked.
+- [x] Every lesson has 5–8 exercises and ends with a developer scenario. Every section uses at least three exercise types.
+- [x] Every exercise can be answered correctly and has an explanation. Every lesson can be played to "Lesson complete!".
 - [ ] Every fact and number in the content has been checked against the video.
-- [ ] `content/course-llm-deep-dive.md` and the database content match.
-- [ ] Applying the migrations to an empty Supabase project creates the course with all its exercises.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] `content/course-llm-deep-dive.md` and the database content match.
+- [x] Applying the migrations to an empty Supabase project creates the course with all its exercises.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 
@@ -69,3 +69,5 @@ Give software developers a course that explains how LLMs like ChatGPT are built 
 - Depends on specs 010, 011 and 012 being `Done`.
 - Use the video's chapter timestamps to check facts while writing, e.g. tokenization at 0:07:47, base models at 0:42:52, hallucinations at 1:20:32, RL at 2:14:42, RLHF at 2:48:26.
 - Distractors in the system builder and architecture exercises should be plausible LLM-pipeline parts (e.g. "Image classifier", "Reward model" where it doesn't belong), not cloud services.
+- Added during implementation (owner's choice): architecture and system builder exercises take an optional `noun` (e.g. "part"/"parts", "stage"/"stages") for their cards. Without it they still say "services", so the Azure lessons are unchanged.
+- Fact check: the content was written from the video's chapter outline, not the transcript. Numbers worth checking against the video: FineWeb ~44 TB / ~15T tokens (0:01:00), GPT-4 vocabulary ~100,277 (0:07:47), GPT-2 ~1.6B parameters, 1,024-token context, ~$40,000 in 2019 vs a few hundred dollars now (0:31:09).

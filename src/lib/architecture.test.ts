@@ -72,6 +72,16 @@ describe("isArchitectureContent", () => {
     expect(isArchitectureContent(valid)).toBe(true);
   });
 
+  it("accepts an optional noun for the cards, and rejects a malformed one", () => {
+    expect(
+      isArchitectureContent({
+        ...valid,
+        noun: { one: "part", other: "parts" },
+      }),
+    ).toBe(true);
+    expect(isArchitectureContent({ ...valid, noun: "parts" })).toBe(false);
+  });
+
   it("rejects a slot that is missing from the diagram", () => {
     expect(
       isArchitectureContent({
