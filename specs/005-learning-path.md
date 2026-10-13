@@ -8,9 +8,10 @@ Show each learner their role's course as a Duolingo-style path of lessons on `/l
 
 ## Requirements
 
-- Courses are content files in the repo, one per role (e.g. `content/<role>/course.json`). A course has sections; a section has a title and ordered lessons; a lesson has an id, a title and its exercises (exercise format is defined in spec 006).
-- The course format is typed and validated when loaded, so a broken content file fails clearly in development and CI.
-- Sample content: a short course for at least two roles (Marketing and Software developers), 2 sections with 3–4 lessons each. Exercises can be placeholders until spec 006.
+- Courses, sections and lessons are stored in the Supabase database. A course belongs to one role; a course has ordered sections; a section has a title and ordered lessons; a lesson has an id and a title. Exercises are added in spec 006.
+- Signed-in users can read course content. Nobody can change it from the app; content is only changed through migrations or seed data.
+- The database schema and seed data live in the repo, so a fresh Supabase project can be set up with the same content.
+- Sample content: a short course for at least two roles (Marketing and Software developers), 2 sections with 3–4 lessons each.
 - `/learn` shows the course for the user's role:
   - At the top, a card with the current section's title and its progress (e.g. "1 / 4 lessons").
   - Below, each section with its title, followed by its lessons as round buttons laid out in a vertical zig-zag path.
@@ -24,12 +25,14 @@ Show each learner their role's course as a Duolingo-style path of lessons on `/l
 
 ## Acceptance criteria
 
-- [ ] A user with role Marketing sees the Marketing course; a user with role Software developers sees theirs.
+- [ ] A user with role Marketing sees the Marketing course from the database; a user with role Software developers sees theirs.
+- [ ] Changing a lesson title in the database (e.g. in the Supabase dashboard) shows the new title on `/learn` after a reload, without a deploy.
+- [ ] Applying the migrations and seed data to an empty Supabase project creates the tables and the sample courses.
+- [ ] A signed-in user can read content but can't insert, update or delete it (row-level security is on); a signed-out request can't read it.
 - [ ] With no progress, the first lesson is "current" and all others are "locked".
 - [ ] The path-state logic gives the correct states for a given set of completed ids (checked with at least one example where some lessons are done).
 - [ ] Clicking the current lesson goes to `/lesson/[id]`; locked lessons do nothing and are announced as locked to screen readers.
 - [ ] A role without a course shows the "coming soon" message.
-- [ ] An invalid course file produces a clear error naming the file and the problem.
 - [ ] The path looks right and has no horizontal scroll at 360px, 768px and 1280px.
 - [ ] `pnpm lint` and `pnpm typecheck` pass.
 
@@ -38,9 +41,10 @@ Show each learner their role's course as a Duolingo-style path of lessons on `/l
 - The lesson page itself, exercises and saving progress (spec 006).
 - XP, streaks, hearts, crowns, chests or any other game rewards.
 - Section tests, skipping ahead, or unlocking lessons manually.
-- An admin or CMS for editing content.
+- An admin page or CMS for editing content in the app.
 
 ## Notes
 
 - Depends on spec 003 (role) and spec 004 (app layout).
-- Use `content/` as described in the README ("MDX/JSON files in the repo").
+- The README currently says content lives in MDX/JSON files in the repo; update it to say content is stored in Supabase.
+- Keep the role list from spec 003 in code; courses reference a role by its id.
