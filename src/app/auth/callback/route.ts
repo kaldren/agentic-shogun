@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { safeNextPath } from "@/lib/auth";
+import { safeNextPath, signInErrorPath } from "@/lib/paths";
 import { createClient } from "@/lib/supabase/server";
 
 // Google redirects here (through Supabase) after the consent screen.
@@ -22,7 +22,5 @@ export async function GET(request: NextRequest) {
   }
 
   // Missing code, cancelled consent or failed exchange.
-  const target = new URL(next, request.url);
-  target.searchParams.set("auth_error", "1");
-  return NextResponse.redirect(target);
+  return NextResponse.redirect(new URL(signInErrorPath(next), request.url));
 }

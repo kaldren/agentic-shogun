@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { safeNextPath } from "@/lib/auth";
+import { safeNextPath, signInErrorPath } from "@/lib/paths";
 import { createClient } from "@/lib/supabase/server";
 
 export async function signInWithGoogle(formData: FormData) {
@@ -22,7 +22,7 @@ export async function signInWithGoogle(formData: FormData) {
   });
 
   if (error || !data.url) {
-    redirect(withAuthError(next));
+    redirect(signInErrorPath(next));
   }
 
   redirect(data.url);
@@ -32,10 +32,4 @@ export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/");
-}
-
-function withAuthError(path: string) {
-  const url = new URL(path, "http://localhost");
-  url.searchParams.set("auth_error", "1");
-  return `${url.pathname}${url.search}`;
 }

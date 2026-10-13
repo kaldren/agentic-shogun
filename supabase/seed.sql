@@ -1,0 +1,1 @@
+-- Seed data for local development. Course content is added in spec 005.

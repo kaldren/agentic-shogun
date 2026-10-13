@@ -1,6 +1,6 @@
 # 003: Role onboarding
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -21,17 +21,17 @@ Let each learner pick their role (profession) after signing in, so we can show t
 
 ## Acceptance criteria
 
-- [ ] A signed-out visitor on `/` sees the landing page with the role preview and a "Get started" button that opens the Google consent screen.
-- [ ] A new user lands on `/welcome` after their first sign-in.
-- [ ] Selecting a role card highlights it (`border-green-500 bg-green-50` plus a check icon), and "Continue" is disabled until a role is selected.
-- [ ] After "Continue", the user is on `/learn` and sees their role.
-- [ ] Signing out and in again takes the user to `/learn`, not `/welcome`, with the same role.
-- [ ] Opening `/welcome` again shows the current role selected, and choosing another role updates it.
-- [ ] A signed-out visitor opening `/learn` or `/welcome` is sent to `/`, and after sign-in ends up on the page they asked for.
-- [ ] A signed-in user opening `/` is redirected to `/learn` (or `/welcome` without a role).
-- [ ] A user can't read or change another user's role (row-level security is on).
-- [ ] The role cards are keyboard accessible and the layout works at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] A signed-out visitor on `/` sees the landing page with the role preview and a "Get started" button that opens the Google consent screen.
+- [x] A new user lands on `/welcome` after their first sign-in.
+- [x] Selecting a role card highlights it (`border-green-500 bg-green-50` plus a check icon), and "Continue" is disabled until a role is selected.
+- [x] After "Continue", the user is on `/learn` and sees their role.
+- [x] Signing out and in again takes the user to `/learn`, not `/welcome`, with the same role.
+- [x] Opening `/welcome` again shows the current role selected, and choosing another role updates it.
+- [x] A signed-out visitor opening `/learn` or `/welcome` is sent to `/`, and after sign-in ends up on the page they asked for.
+- [x] A signed-in user opening `/` is redirected to `/learn` (or `/welcome` without a role).
+- [x] A user can't read or change another user's role (row-level security is on).
+- [x] The role cards are keyboard accessible and the layout works at 360px, 768px and 1280px.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 
