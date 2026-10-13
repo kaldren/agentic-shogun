@@ -1,6 +1,6 @@
 # 001: Google sign-in with Supabase
 
-**Status:** Draft
+**Status:** Done
 
 ## Goal
 
@@ -21,16 +21,16 @@ Let visitors sign in to Agentic Shogun with their Google (Gmail) account, so lat
 
 ## Acceptance criteria
 
-- [ ] Clicking "Sign in with Google" in the header starts the Google consent screen.
-- [ ] After approving, the user is back on the page they started from and the header shows their name, avatar and "Sign out".
-- [ ] Reloading the page keeps the user signed in, with no flash of the signed-out header.
-- [ ] A Server Component can read the current user (verified on at least one page/component that renders server-side).
-- [ ] Clicking "Sign out" signs the user out and shows the signed-out header on the home page.
-- [ ] Cancelling the Google consent screen returns the user to the site with an error message, and signing in again works.
-- [ ] A new user appears in Supabase Auth → Users after first sign-in.
-- [ ] `.env.example` exists with the required variables, and no keys are committed.
-- [ ] The layout works on mobile and desktop widths.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] Clicking "Sign in with Google" in the header starts the Google consent screen.
+- [x] After approving, the user is back on the page they started from and the header shows their name, avatar and "Sign out".
+- [x] Reloading the page keeps the user signed in, with no flash of the signed-out header.
+- [x] A Server Component can read the current user (verified on at least one page/component that renders server-side).
+- [x] Clicking "Sign out" signs the user out and shows the signed-out header on the home page.
+- [x] Cancelling the Google consent screen returns the user to the site with an error message, and signing in again works.
+- [x] A new user appears in Supabase Auth → Users after first sign-in.
+- [x] `.env.example` exists with the required variables, and no keys are committed.
+- [x] The layout works on mobile and desktop widths.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 
