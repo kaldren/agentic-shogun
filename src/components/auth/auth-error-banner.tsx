@@ -24,17 +24,20 @@ export function AuthErrorBanner() {
   return (
     <div
       role="alert"
-      className="bg-destructive/10 text-destructive flex items-center justify-between gap-2 px-4 py-2 text-sm"
+      className="border-danger/20 bg-danger/10 text-danger-text border-t-2 text-sm font-semibold"
     >
-      <p>Sign-in didn&apos;t complete. Please try again.</p>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        aria-label="Dismiss"
-        onClick={dismiss}
-      >
-        <XIcon />
-      </Button>
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2 px-4 py-1 md:px-6">
+        <p>Sign-in didn&apos;t complete. Please try again.</p>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Dismiss"
+          onClick={dismiss}
+          className="text-danger-text hover:bg-danger/10"
+        >
+          <XIcon />
+        </Button>
+      </div>
     </div>
   );
 }
