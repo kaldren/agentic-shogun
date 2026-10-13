@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getCurrentUser } from "@/lib/auth";
 import type { RoleId } from "@/lib/roles";
 import { createClient } from "@/lib/supabase/server";
 
@@ -37,8 +38,22 @@ export async function getCourseForRole(role: RoleId): Promise<Course | null> {
   };
 }
 
-// Ids of the lessons the signed-in user has completed. Progress is stored
-// from spec 006; until then nobody has completed anything.
+// Ids of the lessons the signed-in user has completed.
 export async function getCompletedLessonIds(): Promise<Set<string>> {
-  return new Set();
+  const user = await getCurrentUser();
+  if (!user) return new Set();
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lesson_progress")
+    .select("lesson_id")
+    .eq("user_id", user.id);
+  if (error) throw error;
+
+  return new Set(data.map(({ lesson_id }) => lesson_id));
+}
+
+// Number of lessons the signed-in user has completed.
+export async function getCompletedLessonCount(): Promise<number> {
+  return (await getCompletedLessonIds()).size;
 }

@@ -50,7 +50,7 @@ Early development. This is the starting point for the MVP. Features are specifie
 
 The schema lives in `supabase/migrations`, and local seed data in `supabase/seed.sql`. Every table has row-level security.
 
-Course content (courses, sections, lessons) is stored in the database and is read-only for users. New or changed content ships as a migration, so `supabase db push` brings it to production. The sample course is described in `content/sample-course.md`. After changing the schema, run `pnpm db:types` (with local Supabase running) to update `src/lib/supabase/database.types.ts`.
+Course content (courses, sections, lessons, exercises) is stored in the database and is read-only for users. Exercise solutions can't be read by users at all; answers are checked by the `check_answer` database function. Completed lessons are saved in `lesson_progress`. New or changed content ships as a migration, so `supabase db push` brings it to production. The sample course is described in `content/sample-course.md`. After changing the schema, run `pnpm db:types` (with local Supabase running) to update `src/lib/supabase/database.types.ts`.
 
 - **Production:** link the project once with `supabase link --project-ref <project-ref>`, then apply new migrations with `supabase db push`.
 - **Local (optional, needs Docker):** `supabase start` runs Postgres and Auth locally and applies the migrations and seed data. `supabase db reset` starts over. To use it, set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` to the values `supabase status` prints.
