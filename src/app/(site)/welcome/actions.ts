@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getCurrentUser } from "@/lib/auth";
+import { getCurrentRole } from "@/lib/profile";
 import { findRole } from "@/lib/roles";
 import { createClient } from "@/lib/supabase/server";
 
@@ -19,10 +20,13 @@ export async function saveRole(
   const role = findRole(formData.get("role")?.toString());
   if (!role) return { error: "Please pick a role." };
 
+  // A new role starts with its first course (spec 010).
+  const previous = await getCurrentRole();
   const supabase = await createClient();
   const { error } = await supabase.from("profiles").upsert({
     id: user.id,
     role: role.id,
+    ...(previous?.id !== role.id && { current_course_id: null }),
     updated_at: new Date().toISOString(),
   });
   if (error) return { error: "We couldn't save your role. Please try again." };

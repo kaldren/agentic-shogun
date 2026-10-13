@@ -4,7 +4,7 @@ import {
   isArchitectureContent,
   type ArchitectureContent,
 } from "@/lib/architecture";
-import { getCompletedLessonIds, getCourseForRole } from "@/lib/course";
+import { getCompletedLessonIds, getCoursesForRole } from "@/lib/course";
 import { lessonStates, type LessonState } from "@/lib/learning-path";
 import { resumeProgress, type LessonProgress } from "@/lib/lesson-progress";
 import { getCurrentRole } from "@/lib/profile";
@@ -41,21 +41,26 @@ export type PlayableLesson = {
   progress: LessonProgress;
 };
 
-// Returns the lesson if it is in the signed-in user's course and unlocked,
-// otherwise null.
+// Returns the lesson if it is in one of the signed-in user's courses and
+// unlocked, otherwise null.
 export async function getPlayableLesson(
   lessonId: string,
 ): Promise<PlayableLesson | null> {
   const role = await getCurrentRole();
   if (!role) return null;
 
-  const [course, completed] = await Promise.all([
-    getCourseForRole(role.id),
+  const [courses, completed] = await Promise.all([
+    getCoursesForRole(role.id),
     getCompletedLessonIds(),
   ]);
-  if (!course) return null;
 
-  const lessons = course.sections.flatMap((section) => section.lessons);
+  // Any course of the role can be played, not only the current one. Lessons
+  // unlock in order within their own course.
+  const lessons = courses
+    .map((course) => course.sections.flatMap((section) => section.lessons))
+    .find((lessons) => lessons.some(({ id }) => id === lessonId));
+  if (!lessons) return null;
+
   const lesson = lessons.find(({ id }) => id === lessonId);
   const state = lessonStates(
     lessons.map(({ id }) => id),

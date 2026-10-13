@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { lessonStates } from "./learning-path";
+import { currentCourseId, lessonStates } from "./learning-path";
 
 const lessons = ["a", "b", "c", "d"];
 
@@ -39,5 +39,25 @@ describe("lessonStates", () => {
       "locked",
       "locked",
     ]);
+  });
+});
+
+describe("currentCourseId", () => {
+  const courses = ["llm", "azure"];
+
+  it("defaults to the first course of the role", () => {
+    expect(currentCourseId(courses, null)).toBe("llm");
+  });
+
+  it("keeps the course the user picked", () => {
+    expect(currentCourseId(courses, "azure")).toBe("azure");
+  });
+
+  it("ignores a picked course that isn't one of the role's courses", () => {
+    expect(currentCourseId(courses, "other-role-course")).toBe("llm");
+  });
+
+  it("is null when the role has no course", () => {
+    expect(currentCourseId([], "azure")).toBeNull();
   });
 });

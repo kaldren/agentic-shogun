@@ -37,17 +37,20 @@ export type Database = {
       courses: {
         Row: {
           id: string;
+          position: number;
           role: string;
           title: string;
         };
         ComputedFields: never;
         Insert: {
           id: string;
+          position: number;
           role: string;
           title: string;
         };
         Update: {
           id?: string;
+          position?: number;
           role?: string;
           title?: string;
         };
@@ -185,6 +188,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string;
+          current_course_id: string | null;
           id: string;
           role: string;
           updated_at: string;
@@ -192,17 +196,27 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
+          current_course_id?: string | null;
           id: string;
           role: string;
           updated_at?: string;
         };
         Update: {
           created_at?: string;
+          current_course_id?: string | null;
           id?: string;
           role?: string;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "profiles_current_course_id_fkey";
+            columns: ["current_course_id"];
+            isOneToOne: false;
+            referencedRelation: "courses";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       sections: {
         Row: {
@@ -246,6 +260,10 @@ export type Database = {
           explanation: string;
           solution: Json;
         }[];
+      };
+      is_course_of_role: {
+        Args: { course_id: string; role: string };
+        Returns: boolean;
       };
     };
     Enums: {
