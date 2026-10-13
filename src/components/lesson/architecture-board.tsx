@@ -1,22 +1,15 @@
 "use client";
 
-import {
-  draggable,
-  dropTargetForElements,
-} from "@atlaskit/pragmatic-drag-and-drop/adapter/element-adapter";
 import { ArrowDownIcon, CheckIcon, XIcon } from "lucide-react";
-import {
-  useEffect,
-  useEffectEvent,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type ReactNode,
-  type RefObject,
-} from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 
 import type { Answer, AnswerResult } from "@/app/(lesson)/lesson/[id]/actions";
+import {
+  pressOnKey,
+  useDraggable,
+  useDropTarget,
+} from "@/components/lesson/drag-and-drop";
 import { Button } from "@/components/ui/button";
 import {
   allSlotsFilled,
@@ -416,65 +409,4 @@ function DropArea({
       {children}
     </div>
   );
-}
-
-// Enter and Space activate role="button" elements, like real buttons.
-function pressOnKey(onPress: () => void) {
-  return (event: KeyboardEvent) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      onPress();
-    }
-  };
-}
-
-function useDraggable(
-  ref: RefObject<HTMLElement | null>,
-  cardId: string | null,
-  enabled: boolean,
-): boolean {
-  const [dragging, setDragging] = useState(false);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element || !cardId || !enabled) return;
-    return draggable({
-      element,
-      getInitialData: () => ({ cardId }),
-      onDragStart: () => setDragging(true),
-      onDrop: () => setDragging(false),
-    });
-  }, [ref, cardId, enabled]);
-
-  return dragging && enabled;
-}
-
-// `target` is a slot id, or null for the services bank. Returns whether a
-// card is being dragged over it.
-function useDropTarget(
-  ref: RefObject<HTMLElement | null>,
-  target: string | null,
-  enabled: boolean,
-  onDropCard: (cardId: string) => void,
-): boolean {
-  const [over, setOver] = useState(false);
-  const drop = useEffectEvent(onDropCard);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element || !enabled) return;
-    return dropTargetForElements({
-      element,
-      canDrop: ({ source }) => typeof source.data.cardId === "string",
-      getData: () => ({ target }),
-      onDragEnter: () => setOver(true),
-      onDragLeave: () => setOver(false),
-      onDrop: ({ source }) => {
-        setOver(false);
-        drop(source.data.cardId as string);
-      },
-    });
-  }, [ref, target, enabled]);
-
-  return over && enabled;
 }

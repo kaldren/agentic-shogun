@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import type { Placements } from "@/lib/architecture";
 import { getCurrentUser } from "@/lib/auth";
+import type { BucketPlacements } from "@/lib/categorize";
 import { getPlayableLesson } from "@/lib/lesson";
 import type { LessonProgress } from "@/lib/lesson-progress";
 import { createClient } from "@/lib/supabase/server";
@@ -14,7 +15,8 @@ export type Answer =
   | { type: "multiple_choice"; choice: number }
   | { type: "architecture"; placements: Placements }
   | { type: "system_builder"; nodes: string[]; connections: Connection[] }
-  | { type: "ordering"; order: string[] };
+  | { type: "ordering"; order: string[] }
+  | { type: "categorize"; placements: BucketPlacements };
 
 export type AnswerResult = { correct: boolean; explanation: string } & (
   | { type: "multiple_choice"; correctChoice: number }
@@ -25,6 +27,7 @@ export type AnswerResult = { correct: boolean; explanation: string } & (
       correctConnections: Connection[];
     }
   | { type: "ordering"; correctOrder: string[] }
+  | { type: "categorize"; correctPlacements: BucketPlacements }
 );
 
 // Checks an answer in the database, so solutions never reach the browser
@@ -73,6 +76,15 @@ export async function checkAnswer(
       correctOrder: solution.order,
     };
   }
+  if (answer.type === "categorize") {
+    const solution = data.solution as { items: BucketPlacements };
+    return {
+      type: answer.type,
+      correct,
+      explanation,
+      correctPlacements: solution.items,
+    };
+  }
   const solution = data.solution as {
     nodes: string[];
     connections: Connection[];
@@ -97,6 +109,8 @@ function toRpcAnswer(answer: Answer) {
       return { nodes: answer.nodes, connections: answer.connections };
     case "ordering":
       return { order: answer.order };
+    case "categorize":
+      return { placements: answer.placements };
   }
 }
 

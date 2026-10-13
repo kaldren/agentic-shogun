@@ -4,6 +4,7 @@ import {
   isArchitectureContent,
   type ArchitectureContent,
 } from "@/lib/architecture";
+import { isCategorizeContent, type CategorizeContent } from "@/lib/categorize";
 import { getCompletedLessonIds, getCoursesForRole } from "@/lib/course";
 import { lessonStates, type LessonState } from "@/lib/learning-path";
 import { resumeProgress, type LessonProgress } from "@/lib/lesson-progress";
@@ -34,11 +35,16 @@ export type OrderingExercise = OrderingContent & {
   id: string;
   type: "ordering";
 };
+export type CategorizeExercise = CategorizeContent & {
+  id: string;
+  type: "categorize";
+};
 export type Exercise =
   | MultipleChoiceExercise
   | ArchitectureExercise
   | SystemBuilderExercise
-  | OrderingExercise;
+  | OrderingExercise
+  | CategorizeExercise;
 
 export type PlayableLesson = {
   id: string;
@@ -126,6 +132,10 @@ async function getExercises(lessonId: string): Promise<Exercise[]> {
     if (type === "ordering" && isOrderingContent(content)) {
       const { question, scenario, items } = content;
       return { id, type, question, scenario, items };
+    }
+    if (type === "categorize" && isCategorizeContent(content)) {
+      const { question, buckets, items } = content;
+      return { id, type, question, buckets, items };
     }
     throw new Error(`Exercise ${id} has invalid content for type ${type}`);
   });
