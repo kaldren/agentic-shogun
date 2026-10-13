@@ -1,6 +1,6 @@
 # 008: System builder canvas
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -34,18 +34,18 @@ Let learners build a system themselves, like in n8n: they read a use case, drag 
 ## Acceptance criteria
 
 - [x] A user with role Software developers sees the new section on `/learn`; after the RAG lesson, its lesson opens the system builder with the scenario, an empty canvas and all 9 palette nodes.
-- [ ] A node can be dragged onto the canvas, moved, and removed back to the palette (its connections go with it); a node can't be added twice.
-- [ ] Connections can be drawn from an output to an input and deleted; self-connections and duplicates are not possible.
-- [ ] The same can be done by tapping on a touch screen and with the keyboard only; screen readers announce added nodes and connections.
-- [ ] "Check" is disabled until at least two nodes and one connection are on the canvas.
-- [ ] The correct nodes and connections show the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
-- [ ] A distractor node, a wrong connection, a reversed connection or a missing connection shows the red panel, marks nodes and connections correct or wrong (icon and color), shows missing connections dashed, and the exercise comes back with an empty canvas before the lesson ends.
+- [x] A node can be dragged onto the canvas, moved, and removed back to the palette (its connections go with it); a node can't be added twice.
+- [x] Connections can be drawn from an output to an input and deleted; self-connections and duplicates are not possible.
+- [x] The same can be done by tapping on a touch screen and with the keyboard only; screen readers announce added nodes and connections.
+- [x] "Check" is disabled until at least two nodes and one connection are on the canvas.
+- [x] The correct nodes and connections show the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
+- [x] A distractor node, a wrong connection, a reversed connection or a missing connection shows the red panel, marks nodes and connections correct or wrong (icon and color), shows missing connections dashed, and the exercise comes back with an empty canvas before the lesson ends.
 - [x] The correct nodes and connections are not sent to the browser before the user presses "Check" (checked on the server).
 - [x] Changing a node name or the scenario in the database shows the new text after a reload.
-- [ ] Multiple-choice and architecture lessons from specs 006 and 007 still work unchanged.
-- [ ] Motion respects `prefers-reduced-motion`.
-- [ ] The canvas opens full screen and closes again with the button or Escape, on desktop and on a phone, and everything can still be added and connected there.
-- [ ] No horizontal page scroll at 360px, 768px and 1280px.
+- [x] Multiple-choice and architecture lessons from specs 006 and 007 still work unchanged.
+- [x] Motion respects `prefers-reduced-motion`.
+- [x] The canvas opens full screen and closes again with the button or Escape, on desktop and on a phone, and everything can still be added and connected there.
+- [x] No horizontal page scroll at 360px, 768px and 1280px.
 - [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
