@@ -1,6 +1,6 @@
 # 011: Ordering exercise
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
