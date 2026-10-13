@@ -1,6 +1,6 @@
 # 007: Architecture drag and drop
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -32,18 +32,18 @@ Let learners practise real system design with a use-case exercise: they read a s
 
 ## Acceptance criteria
 
-- [ ] A user with role Software developers sees the new course on `/learn`, and its lesson opens the architecture exercise with the scenario, the empty diagram and all 9 cards.
-- [ ] A card can be dragged into a slot, moved to another slot, swapped with a card in a filled slot and dragged back to the bank.
-- [ ] The same can be done by tapping on a touch screen and with the keyboard only; screen readers announce where a card was placed.
-- [ ] "Check" is disabled until all 6 slots are filled.
-- [ ] All cards in the right slots shows the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
-- [ ] At least one wrong card shows the red panel, marks each slot correct or wrong (icon and color), shows the correct card for the wrong slots, and the exercise comes back empty before the lesson ends.
-- [ ] The correct slot for each card is not sent to the browser before the user presses "Check" (checked on the server).
-- [ ] Changing a card name or the scenario in the database shows the new text after a reload.
-- [ ] Multiple-choice lessons from spec 006 still work unchanged.
-- [ ] Motion respects `prefers-reduced-motion`.
-- [ ] No horizontal scroll at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] A user with role Software developers sees the new course on `/learn`, and its lesson opens the architecture exercise with the scenario, the empty diagram and all 9 cards.
+- [x] A card can be dragged into a slot, moved to another slot, swapped with a card in a filled slot and dragged back to the bank.
+- [x] The same can be done by tapping on a touch screen and with the keyboard only; screen readers announce where a card was placed.
+- [x] "Check" is disabled until all 6 slots are filled.
+- [x] All cards in the right slots shows the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
+- [x] At least one wrong card shows the red panel, marks each slot correct or wrong (icon and color), shows the correct card for the wrong slots, and the exercise comes back empty before the lesson ends.
+- [x] The correct slot for each card is not sent to the browser before the user presses "Check" (checked on the server).
+- [x] Changing a card name or the scenario in the database shows the new text after a reload.
+- [x] Multiple-choice lessons from spec 006 still work unchanged.
+- [x] Motion respects `prefers-reduced-motion`.
+- [x] No horizontal scroll at 360px, 768px and 1280px.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 

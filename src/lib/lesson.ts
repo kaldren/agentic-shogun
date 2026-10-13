@@ -1,5 +1,9 @@
 import "server-only";
 
+import {
+  isArchitectureContent,
+  type ArchitectureContent,
+} from "@/lib/architecture";
 import { getCompletedLessonIds, getCourseForRole } from "@/lib/course";
 import { lessonStates, type LessonState } from "@/lib/learning-path";
 import { getCurrentRole } from "@/lib/profile";
@@ -12,7 +16,11 @@ export type MultipleChoiceExercise = {
   question: string;
   options: string[];
 };
-export type Exercise = MultipleChoiceExercise;
+export type ArchitectureExercise = ArchitectureContent & {
+  id: string;
+  type: "architecture";
+};
+export type Exercise = MultipleChoiceExercise | ArchitectureExercise;
 
 export type PlayableLesson = {
   id: string;
@@ -55,11 +63,15 @@ async function getExercises(lessonId: string): Promise<Exercise[]> {
     .order("position");
   if (error) throw error;
 
-  return data.map(({ id, type, content }) => {
-    if (type !== "multiple_choice" || !isMultipleChoiceContent(content)) {
-      throw new Error(`Exercise ${id} has invalid content for type ${type}`);
+  return data.map(({ id, type, content }): Exercise => {
+    if (type === "multiple_choice" && isMultipleChoiceContent(content)) {
+      return { id, type, question: content.question, options: content.options };
     }
-    return { id, type, question: content.question, options: content.options };
+    if (type === "architecture" && isArchitectureContent(content)) {
+      const { question, scenario, slots, cards, flows } = content;
+      return { id, type, question, scenario, slots, cards, flows };
+    }
+    throw new Error(`Exercise ${id} has invalid content for type ${type}`);
   });
 }
 

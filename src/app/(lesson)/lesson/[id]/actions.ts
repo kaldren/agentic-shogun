@@ -3,36 +3,57 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import type { Placements } from "@/lib/architecture";
 import { getCurrentUser } from "@/lib/auth";
 import { getPlayableLesson } from "@/lib/lesson";
 import { createClient } from "@/lib/supabase/server";
 
-export type AnswerResult = {
-  correct: boolean;
-  correctChoice: number;
-  explanation: string;
-};
+export type Answer =
+  | { type: "multiple_choice"; choice: number }
+  | { type: "architecture"; placements: Placements };
 
-// Checks a multiple-choice answer in the database, so solutions never
-// reach the browser before the learner answers.
+export type AnswerResult = { correct: boolean; explanation: string } & (
+  | { type: "multiple_choice"; correctChoice: number }
+  | { type: "architecture"; correctPlacements: Placements }
+);
+
+// Checks an answer in the database, so solutions never reach the browser
+// before the learner answers.
 export async function checkAnswer(
   exerciseId: string,
-  choice: number,
+  answer: Answer,
 ): Promise<AnswerResult> {
   const user = await getCurrentUser();
   if (!user) redirect("/");
 
   const supabase = await createClient();
   const { data, error } = await supabase
-    .rpc("check_answer", { exercise_id: exerciseId, answer: { choice } })
+    .rpc("check_answer", {
+      exercise_id: exerciseId,
+      answer:
+        answer.type === "multiple_choice"
+          ? { choice: answer.choice }
+          : { placements: answer.placements },
+    })
     .single();
   if (error) throw error;
 
-  const solution = data.solution as { correct: number };
+  const { correct, explanation } = data;
+  if (answer.type === "multiple_choice") {
+    const solution = data.solution as { correct: number };
+    return {
+      type: answer.type,
+      correct,
+      explanation,
+      correctChoice: solution.correct,
+    };
+  }
+  const solution = data.solution as { slots: Placements };
   return {
-    correct: data.correct,
-    correctChoice: solution.correct,
-    explanation: data.explanation,
+    type: answer.type,
+    correct,
+    explanation,
+    correctPlacements: solution.slots,
   };
 }
 

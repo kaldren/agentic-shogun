@@ -1,21 +1,28 @@
 "use client";
 
 import { CheckIcon, XIcon } from "lucide-react";
-import { useEffect, useRef, useState, useTransition } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+  type ReactNode,
+} from "react";
 
 import {
   checkAnswer,
   completeLesson,
+  type Answer,
   type AnswerResult,
 } from "@/app/(lesson)/lesson/[id]/actions";
+import { ArchitectureBoard } from "@/components/lesson/architecture-board";
 import { LessonComplete } from "@/components/lesson/lesson-complete";
+import { MultipleChoice } from "@/components/lesson/multiple-choice";
 import { QuitLessonButton } from "@/components/lesson/quit-lesson-button";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { Exercise } from "@/lib/lesson";
 import { cn } from "@/lib/utils";
-
-type Feedback = AnswerResult & { choice: number };
 
 export function LessonPlayer({
   lessonId,
@@ -29,11 +36,13 @@ export function LessonPlayer({
   // Exercises still to answer, in order. A wrong answer goes to the end.
   const [queue, setQueue] = useState(() => exercises.map((_, i) => i));
   const [correctCount, setCorrectCount] = useState(0);
-  const [choice, setChoice] = useState<number | null>(null);
-  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  // The learner's answer, or null while it is incomplete.
+  const [answer, setAnswer] = useState<Answer | null>(null);
+  const [feedback, setFeedback] = useState<AnswerResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isChecking, startChecking] = useTransition();
-  // Counts "Continue" presses, to move focus to each new question.
+  // Counts "Continue" presses, to move focus to each new question and to
+  // start a repeated exercise empty.
   const [step, setStep] = useState(0);
   const questionRef = useRef<HTMLHeadingElement>(null);
 
@@ -50,13 +59,13 @@ export function LessonPlayer({
   }
 
   function check() {
-    if (choice === null || !exercise) return;
-    const answered = choice;
+    if (answer === null || !exercise) return;
+    const answered = answer;
     setError(null);
     startChecking(async () => {
       try {
         const result = await checkAnswer(exercise.id, answered);
-        setFeedback({ ...result, choice: answered });
+        setFeedback(result);
         if (result.correct) setCorrectCount((count) => count + 1);
       } catch {
         setError("We couldn't check your answer. Please try again.");
@@ -68,7 +77,7 @@ export function LessonPlayer({
     setQueue(([current, ...rest]) =>
       feedback?.correct ? rest : [...rest, current!],
     );
-    setChoice(null);
+    setAnswer(null);
     setFeedback(null);
     setStep((n) => n + 1);
   }
@@ -101,22 +110,23 @@ export function LessonPlayer({
           >
             {exercise.question}
           </h1>
-          <fieldset
-            aria-labelledby="question"
-            disabled={feedback !== null || isChecking}
-            className="flex flex-col gap-3"
-          >
-            {exercise.options.map((option, i) => (
-              <OptionCard
-                key={i}
-                name={exercise.id}
-                label={option}
-                checked={choice === i}
-                onSelect={() => setChoice(i)}
-                result={optionResult(i, feedback)}
-              />
-            ))}
-          </fieldset>
+          {exercise.type === "multiple_choice" ? (
+            <MultipleChoice
+              key={step}
+              exercise={exercise}
+              result={feedback?.type === "multiple_choice" ? feedback : null}
+              disabled={feedback !== null || isChecking}
+              onAnswerChange={setAnswer}
+            />
+          ) : (
+            <ArchitectureBoard
+              key={step}
+              exercise={exercise}
+              result={feedback?.type === "architecture" ? feedback : null}
+              disabled={feedback !== null || isChecking}
+              onAnswerChange={setAnswer}
+            />
+          )}
           {error && (
             <p role="alert" className="text-danger-text font-semibold">
               {error}
@@ -127,7 +137,13 @@ export function LessonPlayer({
         {feedback ? (
           <FeedbackPanel
             feedback={feedback}
-            correctOption={exercise.options[feedback.correctChoice] ?? ""}
+            correction={
+              <Correction
+                exercise={exercise}
+                answer={answer}
+                result={feedback}
+              />
+            }
             onNext={next}
           />
         ) : (
@@ -136,7 +152,7 @@ export function LessonPlayer({
               <Button
                 type="submit"
                 size="lg"
-                disabled={choice === null || isChecking}
+                disabled={answer === null || isChecking}
                 className="w-full uppercase sm:w-auto sm:min-w-40"
               >
                 Check
@@ -149,77 +165,13 @@ export function LessonPlayer({
   );
 }
 
-type OptionResult = "correct" | "wrong" | null;
-
-function optionResult(i: number, feedback: Feedback | null): OptionResult {
-  if (!feedback) return null;
-  if (i === feedback.correctChoice) return "correct";
-  if (i === feedback.choice) return "wrong";
-  return null;
-}
-
-function OptionCard({
-  name,
-  label,
-  checked,
-  onSelect,
-  result,
-}: {
-  name: string;
-  label: string;
-  checked: boolean;
-  onSelect: () => void;
-  result: OptionResult;
-}) {
-  return (
-    <label
-      className={cn(
-        "bg-card shadow-edge-secondary has-focus-visible:ring-ring/50 flex min-h-14 cursor-pointer items-center gap-4 rounded-2xl border-2 px-4 py-3 transition-all duration-150 ease-out has-focus-visible:ring-3 has-disabled:cursor-default",
-        result === null &&
-          "not-has-checked:not-has-disabled:hover:border-green-200 not-has-checked:not-has-disabled:hover:bg-green-50 has-checked:border-green-500 has-checked:bg-green-50",
-        result === "correct" && "border-green-500 bg-green-100",
-        result === "wrong" && "border-danger bg-danger-soft",
-      )}
-    >
-      <input
-        type="radio"
-        name={name}
-        checked={checked}
-        onChange={onSelect}
-        className="sr-only"
-      />
-      <span className="flex-1 text-base">{label}</span>
-      {result === "correct" && (
-        <>
-          <CheckIcon
-            aria-hidden
-            className="size-6 shrink-0 text-green-700"
-            strokeWidth={2.5}
-          />
-          <span className="sr-only">(correct answer)</span>
-        </>
-      )}
-      {result === "wrong" && (
-        <>
-          <XIcon
-            aria-hidden
-            className="text-danger-text size-6 shrink-0"
-            strokeWidth={2.5}
-          />
-          <span className="sr-only">(your answer, wrong)</span>
-        </>
-      )}
-    </label>
-  );
-}
-
 function FeedbackPanel({
   feedback,
-  correctOption,
+  correction,
   onNext,
 }: {
-  feedback: Feedback;
-  correctOption: string;
+  feedback: AnswerResult;
+  correction: ReactNode;
   onNext: () => void;
 }) {
   const { correct, explanation } = feedback;
@@ -252,9 +204,7 @@ function FeedbackPanel({
             <h2 className="text-xl font-bold md:text-2xl">
               {correct ? "Great job!" : "Not quite"}
             </h2>
-            {!correct && (
-              <p className="font-semibold">Correct answer: {correctOption}</p>
-            )}
+            {!correct && correction}
             <p>{explanation}</p>
           </div>
         </div>
@@ -271,4 +221,52 @@ function FeedbackPanel({
       </div>
     </footer>
   );
+}
+
+// What the learner should have answered, shown in the red panel.
+function Correction({
+  exercise,
+  answer,
+  result,
+}: {
+  exercise: Exercise;
+  answer: Answer | null;
+  result: AnswerResult;
+}) {
+  if (
+    exercise.type === "multiple_choice" &&
+    result.type === "multiple_choice"
+  ) {
+    return (
+      <p className="font-semibold">
+        Correct answer: {exercise.options[result.correctChoice]}
+      </p>
+    );
+  }
+  if (
+    exercise.type === "architecture" &&
+    answer?.type === "architecture" &&
+    result.type === "architecture"
+  ) {
+    const card = (id: string | undefined) =>
+      exercise.cards.find((c) => c.id === id)?.label;
+    return (
+      <div className="font-semibold">
+        <p>Correct answers:</p>
+        <ul className="list-disc pl-5">
+          {exercise.slots
+            .filter(
+              ({ id }) =>
+                answer.placements[id] !== result.correctPlacements[id],
+            )
+            .map((slot) => (
+              <li key={slot.id}>
+                {slot.label}: {card(result.correctPlacements[slot.id])}
+              </li>
+            ))}
+        </ul>
+      </div>
+    );
+  }
+  return null;
 }
