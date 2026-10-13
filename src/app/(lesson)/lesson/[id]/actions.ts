@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import type { Placements } from "@/lib/architecture";
 import { getCurrentUser } from "@/lib/auth";
 import { getPlayableLesson } from "@/lib/lesson";
+import type { LessonProgress } from "@/lib/lesson-progress";
 import { createClient } from "@/lib/supabase/server";
 import type { Connection } from "@/lib/system-builder";
 
@@ -104,6 +105,65 @@ export async function completeLesson(lessonId: string): Promise<void> {
     );
   if (error) throw error;
 
+  // The next visit starts from the first exercise.
+  await deleteAttempt(user.id, lessonId);
+
   // /learn and /profile show progress, so drop their cached versions.
   revalidatePath("/", "layout");
+}
+
+// Saves where the learner is in a lesson, so they can resume it later.
+// Ids that aren't exercises of this lesson are dropped.
+export async function saveLessonProgress(
+  lessonId: string,
+  progress: LessonProgress,
+): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/");
+
+  const supabase = await createClient();
+  const { data: exercises, error: exercisesError } = await supabase
+    .from("exercises")
+    .select("id")
+    .eq("lesson_id", lessonId);
+  if (exercisesError) throw exercisesError;
+
+  const ids = new Set(exercises.map(({ id }) => id));
+  const ofLesson = (list: unknown) =>
+    Array.isArray(list) ? list.filter((id) => ids.has(id)) : [];
+
+  const { error } = await supabase.from("lesson_attempts").upsert(
+    {
+      user_id: user.id,
+      lesson_id: lessonId,
+      queue: ofLesson(progress.queue),
+      done: ofLesson(progress.done),
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id,lesson_id" },
+  );
+  if (error) throw error;
+
+  // /learn shows "Continue" for lessons in progress.
+  revalidatePath("/learn");
+}
+
+// Forgets where the learner is, so the lesson starts from the first
+// exercise. Completion on the path is kept.
+export async function restartLesson(lessonId: string): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/");
+
+  await deleteAttempt(user.id, lessonId);
+  revalidatePath("/learn");
+}
+
+async function deleteAttempt(userId: string, lessonId: string): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("lesson_attempts")
+    .delete()
+    .eq("user_id", userId)
+    .eq("lesson_id", lessonId);
+  if (error) throw error;
 }

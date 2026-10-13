@@ -24,15 +24,15 @@ Let learners leave a lesson halfway and pick up where they left off, go over a f
 - [ ] Answering two exercises of a lesson, quitting and opening it again continues at the third exercise with the progress bar at the same place.
 - [ ] An exercise answered wrongly before quitting is still asked again later in the lesson after resuming.
 - [ ] Saved progress survives a reload and a new sign-in on another browser.
-- [ ] A lesson in progress shows "Continue" on `/learn`; a lesson not started shows "Start".
+- [x] A lesson in progress shows "Continue" on `/learn`; a lesson not started shows "Start".
 - [ ] A finished lesson opens from `/learn`, plays from the first exercise and can be completed again; it stays done on the path.
 - [ ] "Start over" asks for confirmation; confirming restarts the lesson from the first exercise with an empty progress bar, and cancelling changes nothing.
 - [ ] After finishing a lesson, opening it again starts from the first exercise.
-- [ ] A user can't read or change another user's saved progress (checked with row-level security).
-- [ ] Removing an exercise from a lesson in the database doesn't break resuming a lesson that had progress saved.
+- [x] A user can't read or change another user's saved progress (checked with row-level security).
+- [x] Removing an exercise from a lesson in the database doesn't break resuming a lesson that had progress saved.
 - [ ] Multiple-choice, architecture and system builder exercises all resume correctly.
 - [ ] No horizontal scroll at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 

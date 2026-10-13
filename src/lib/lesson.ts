@@ -6,6 +6,7 @@ import {
 } from "@/lib/architecture";
 import { getCompletedLessonIds, getCourseForRole } from "@/lib/course";
 import { lessonStates, type LessonState } from "@/lib/learning-path";
+import { resumeProgress, type LessonProgress } from "@/lib/lesson-progress";
 import { getCurrentRole } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -36,6 +37,8 @@ export type PlayableLesson = {
   title: string;
   state: Exclude<LessonState, "locked">;
   exercises: Exercise[];
+  // Where to continue: saved progress, or the first exercise.
+  progress: LessonProgress;
 };
 
 // Returns the lesson if it is in the signed-in user's course and unlocked,
@@ -60,7 +63,30 @@ export async function getPlayableLesson(
   ).get(lessonId);
   if (!lesson || !state || state === "locked") return null;
 
-  return { ...lesson, state, exercises: await getExercises(lessonId) };
+  const [exercises, saved] = await Promise.all([
+    getExercises(lessonId),
+    getSavedProgress(lessonId),
+  ]);
+  const progress = resumeProgress(
+    exercises.map(({ id }) => id),
+    saved,
+  );
+  return { ...lesson, state, exercises, progress };
+}
+
+// The signed-in user's saved place in a lesson. Row-level security only
+// returns their own attempt.
+async function getSavedProgress(
+  lessonId: string,
+): Promise<LessonProgress | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("lesson_attempts")
+    .select("queue, done")
+    .eq("lesson_id", lessonId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
 }
 
 async function getExercises(lessonId: string): Promise<Exercise[]> {

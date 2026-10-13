@@ -6,7 +6,11 @@ import { LessonNode } from "@/components/learn/lesson-node";
 import { buttonVariants } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { getCurrentUser } from "@/lib/auth";
-import { getCompletedLessonIds, getCourseForRole } from "@/lib/course";
+import {
+  getCompletedLessonIds,
+  getCourseForRole,
+  getInProgressLessonIds,
+} from "@/lib/course";
 import { lessonStates } from "@/lib/learning-path";
 import { getCurrentRole } from "@/lib/profile";
 import type { Role } from "@/lib/roles";
@@ -30,9 +34,10 @@ async function LearningPath() {
   const role = await getCurrentRole();
   if (!role) redirect("/welcome");
 
-  const [course, completed] = await Promise.all([
+  const [course, completed, inProgress] = await Promise.all([
     getCourseForRole(role.id),
     getCompletedLessonIds(),
+    getInProgressLessonIds(),
   ]);
   if (!course) return <ComingSoon role={role} />;
 
@@ -111,6 +116,7 @@ async function LearningPath() {
                 id={lesson.id}
                 title={lesson.title}
                 state={states.get(lesson.id) ?? "locked"}
+                inProgress={inProgress.has(lesson.id)}
                 index={j}
               />
             ))}

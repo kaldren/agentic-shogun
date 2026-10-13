@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckIcon, XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   useEffect,
   useRef,
@@ -12,6 +13,8 @@ import {
 import {
   checkAnswer,
   completeLesson,
+  restartLesson,
+  saveLessonProgress,
   type Answer,
   type AnswerResult,
 } from "@/app/(lesson)/lesson/[id]/actions";
@@ -19,24 +22,45 @@ import { ArchitectureBoard } from "@/components/lesson/architecture-board";
 import { LessonComplete } from "@/components/lesson/lesson-complete";
 import { MultipleChoice } from "@/components/lesson/multiple-choice";
 import { QuitLessonButton } from "@/components/lesson/quit-lesson-button";
+import { StartOverButton } from "@/components/lesson/start-over-button";
 import { SystemBuilder } from "@/components/lesson/system-builder";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { Exercise } from "@/lib/lesson";
+import {
+  answerProgress,
+  freshProgress,
+  type LessonProgress,
+} from "@/lib/lesson-progress";
 import { cn } from "@/lib/utils";
 
-export function LessonPlayer({
-  lessonId,
-  title,
-  exercises,
-}: {
+type LessonPlayerProps = {
   lessonId: string;
   title: string;
   exercises: Exercise[];
-}) {
-  // Exercises still to answer, in order. A wrong answer goes to the end.
-  const [queue, setQueue] = useState(() => exercises.map((_, i) => i));
-  const [correctCount, setCorrectCount] = useState(0);
+  // Where to continue, from the server (spec 009).
+  initialProgress: LessonProgress;
+};
+
+// Next.js keeps visited pages alive (Cache Components, React <Activity>), so
+// reopening a lesson from a link would show the old player, e.g. a finished
+// lesson's "Lesson complete!" screen. A fresh navigation gets a new
+// bfcacheId, which starts a new player from the saved progress; back and
+// forward keep the current one.
+export function LessonPlayer(props: LessonPlayerProps) {
+  const { bfcacheId } = useRouter();
+  return <Player key={bfcacheId} {...props} />;
+}
+
+function Player({
+  lessonId,
+  title,
+  exercises,
+  initialProgress,
+}: LessonPlayerProps) {
+  // Exercises still to answer, in order (a wrong answer goes to the end),
+  // and the ones answered correctly.
+  const [progress, setProgress] = useState(initialProgress);
   // The learner's answer, or null while it is incomplete.
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [feedback, setFeedback] = useState<AnswerResult | null>(null);
@@ -51,7 +75,10 @@ export function LessonPlayer({
     if (step > 0) questionRef.current?.focus();
   }, [step]);
 
-  const exercise = queue.length > 0 ? exercises[queue[0]!] : undefined;
+  const currentId = progress.queue[0];
+  const exercise = exercises.find(({ id }) => id === currentId);
+  // The bar moves as soon as an answer is shown to be correct.
+  const correctCount = progress.done.length + (feedback?.correct ? 1 : 0);
 
   if (!exercise) {
     return (
@@ -67,7 +94,13 @@ export function LessonPlayer({
       try {
         const result = await checkAnswer(exercise.id, answered);
         setFeedback(result);
-        if (result.correct) setCorrectCount((count) => count + 1);
+        // Save where the learner will continue. Finishing the lesson clears
+        // the saved place instead. Saving is best effort: the lesson goes on
+        // even if it fails.
+        const next = answerProgress(progress, result.correct);
+        if (next.queue.length > 0) {
+          saveLessonProgress(lessonId, next).catch(() => {});
+        }
       } catch {
         setError("We couldn't check your answer. Please try again.");
       }
@@ -75,18 +108,33 @@ export function LessonPlayer({
   }
 
   function next() {
-    setQueue(([current, ...rest]) =>
-      feedback?.correct ? rest : [...rest, current!],
-    );
+    if (!feedback) return;
+    setProgress((current) => answerProgress(current, feedback.correct));
     setAnswer(null);
     setFeedback(null);
     setStep((n) => n + 1);
+  }
+
+  function startOver() {
+    setError(null);
+    startChecking(async () => {
+      try {
+        await restartLesson(lessonId);
+        setProgress(freshProgress(exercises.map(({ id }) => id)));
+        setAnswer(null);
+        setFeedback(null);
+        setStep((n) => n + 1);
+      } catch {
+        setError("We couldn't start the lesson over. Please try again.");
+      }
+    });
   }
 
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="mx-auto flex w-full max-w-2xl items-center gap-4 px-4 pt-6 md:px-6">
         <QuitLessonButton />
+        <StartOverButton disabled={isChecking} onStartOver={startOver} />
         <ProgressBar
           value={correctCount}
           max={exercises.length}
