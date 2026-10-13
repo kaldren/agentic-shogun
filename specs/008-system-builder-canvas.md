@@ -23,7 +23,7 @@ Let learners build a system themselves, like in n8n: they read a use case, drag 
   - Correct: green panel, "Great job!", the explanation and "Continue".
   - Wrong: wrong connections and distractor nodes are marked red with an X icon, correct ones green with a check icon, missing connections are shown as dashed arrows. Red panel with the explanation and "Got it". The exercise is asked again at the end of the lesson, starting with an empty canvas.
 - The canvas fits its frame on load and can be panned and zoomed inside the frame; the page itself never scrolls horizontally.
-- Sample content: a new course for the Software developers role ("Cloud architecture on Azure", one section "Event-driven systems", one lesson "Build an order pipeline") with one system builder exercise:
+- Sample content: a new section 2 "Event-driven systems" in the Software developers course ("AI apps on Azure", from spec 007), with one lesson "Build an order pipeline" and one system builder exercise. The course allows one course per role, so this is a section, not a new course:
   - Nodes: Azure Static Web Apps (Shop frontend), Azure Container Apps (Order API), Azure Service Bus (Order queue), Azure Functions (Order processor), Azure Cosmos DB (Orders database), Azure Communication Services (Confirmation email)
   - Connections: Static Web Apps → Container Apps, Container Apps → Service Bus, Service Bus → Functions, Functions → Cosmos DB, Functions → Communication Services
   - Distractors: Azure Virtual Desktop, Azure IoT Hub, Microsoft Sentinel
@@ -32,7 +32,7 @@ Let learners build a system themselves, like in n8n: they read a use case, drag 
 
 ## Acceptance criteria
 
-- [ ] A user with role Software developers sees the new course on `/learn`, and its lesson opens the system builder with the scenario, an empty canvas and all 9 palette nodes.
+- [ ] A user with role Software developers sees the new section on `/learn`; after the RAG lesson, its lesson opens the system builder with the scenario, an empty canvas and all 9 palette nodes.
 - [ ] A node can be dragged onto the canvas, moved, and removed back to the palette (its connections go with it); a node can't be added twice.
 - [ ] Connections can be drawn from an output to an input and deleted; self-connections and duplicates are not possible.
 - [ ] The same can be done by tapping on a touch screen and with the keyboard only; screen readers announce added nodes and connections.
