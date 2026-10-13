@@ -1,6 +1,6 @@
 # 012: Categorize exercise
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
