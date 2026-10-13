@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Nunito } from "next/font/google";
-import { SiteHeader } from "@/components/site-header";
 
 import "./globals.css";
 
@@ -27,10 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${nunito.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        <SiteHeader />
-        {children}
-      </body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

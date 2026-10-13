@@ -1,6 +1,6 @@
 # 004: App shell and navigation
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -19,14 +19,14 @@ Give signed-in learners a simple, Duolingo-like way to move around the app: a "L
 
 ## Acceptance criteria
 
-- [ ] On a 360px screen, `/learn` and `/profile` show a bottom bar with "Learn" and "Profile"; tapping each opens the page.
-- [ ] On a 1280px screen, the same pages show a left sidebar instead of a bottom bar.
-- [ ] The active item is highlighted and has `aria-current="page"`.
-- [ ] The bottom bar never covers page content (the last element on the page can be scrolled into view).
-- [ ] `/profile` shows avatar, name and current role; "Change role" opens `/welcome`; "Sign out" signs the user out and shows `/`.
-- [ ] Navigation items are at least 44×44px and reachable with the keyboard, with a visible focus ring.
-- [ ] No horizontal scroll at 360px, 768px or 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] On a 360px screen, `/learn` and `/profile` show a bottom bar with "Learn" and "Profile"; tapping each opens the page.
+- [x] On a 1280px screen, the same pages show a left sidebar instead of a bottom bar.
+- [x] The active item is highlighted and has `aria-current="page"`.
+- [x] The bottom bar never covers page content (the last element on the page can be scrolled into view).
+- [x] `/profile` shows avatar, name and current role; "Change role" opens `/welcome`; "Sign out" signs the user out and shows `/`.
+- [x] Navigation items are at least 44×44px and reachable with the keyboard, with a visible focus ring.
+- [x] No horizontal scroll at 360px, 768px or 1280px.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 

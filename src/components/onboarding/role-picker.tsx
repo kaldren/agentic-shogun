@@ -3,7 +3,7 @@
 import { CheckIcon } from "lucide-react";
 import { useActionState, useState } from "react";
 
-import { saveRole } from "@/app/welcome/actions";
+import { saveRole } from "@/app/(site)/welcome/actions";
 import { Button } from "@/components/ui/button";
 import { ROLES, type RoleId } from "@/lib/roles";
 
