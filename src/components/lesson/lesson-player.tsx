@@ -19,6 +19,7 @@ import { ArchitectureBoard } from "@/components/lesson/architecture-board";
 import { LessonComplete } from "@/components/lesson/lesson-complete";
 import { MultipleChoice } from "@/components/lesson/multiple-choice";
 import { QuitLessonButton } from "@/components/lesson/quit-lesson-button";
+import { SystemBuilder } from "@/components/lesson/system-builder";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { Exercise } from "@/lib/lesson";
@@ -118,11 +119,19 @@ export function LessonPlayer({
               disabled={feedback !== null || isChecking}
               onAnswerChange={setAnswer}
             />
-          ) : (
+          ) : exercise.type === "architecture" ? (
             <ArchitectureBoard
               key={step}
               exercise={exercise}
               result={feedback?.type === "architecture" ? feedback : null}
+              disabled={feedback !== null || isChecking}
+              onAnswerChange={setAnswer}
+            />
+          ) : (
+            <SystemBuilder
+              key={step}
+              exercise={exercise}
+              result={feedback?.type === "system_builder" ? feedback : null}
               disabled={feedback !== null || isChecking}
               onAnswerChange={setAnswer}
             />
@@ -266,6 +275,15 @@ function Correction({
             ))}
         </ul>
       </div>
+    );
+  }
+  if (exercise.type === "system_builder" && result.type === "system_builder") {
+    // The canvas below marks every node and connection; here it's enough to
+    // say what to look for.
+    return (
+      <p className="font-semibold">
+        Check the marks on the canvas: red is wrong, dashed arrows are missing.
+      </p>
     );
   }
   return null;

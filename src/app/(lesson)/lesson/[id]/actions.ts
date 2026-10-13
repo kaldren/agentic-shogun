@@ -7,14 +7,21 @@ import type { Placements } from "@/lib/architecture";
 import { getCurrentUser } from "@/lib/auth";
 import { getPlayableLesson } from "@/lib/lesson";
 import { createClient } from "@/lib/supabase/server";
+import type { Connection } from "@/lib/system-builder";
 
 export type Answer =
   | { type: "multiple_choice"; choice: number }
-  | { type: "architecture"; placements: Placements };
+  | { type: "architecture"; placements: Placements }
+  | { type: "system_builder"; nodes: string[]; connections: Connection[] };
 
 export type AnswerResult = { correct: boolean; explanation: string } & (
   | { type: "multiple_choice"; correctChoice: number }
   | { type: "architecture"; correctPlacements: Placements }
+  | {
+      type: "system_builder";
+      correctNodes: string[];
+      correctConnections: Connection[];
+    }
 );
 
 // Checks an answer in the database, so solutions never reach the browser
@@ -30,10 +37,7 @@ export async function checkAnswer(
   const { data, error } = await supabase
     .rpc("check_answer", {
       exercise_id: exerciseId,
-      answer:
-        answer.type === "multiple_choice"
-          ? { choice: answer.choice }
-          : { placements: answer.placements },
+      answer: toRpcAnswer(answer),
     })
     .single();
   if (error) throw error;
@@ -48,13 +52,38 @@ export async function checkAnswer(
       correctChoice: solution.correct,
     };
   }
-  const solution = data.solution as { slots: Placements };
+  if (answer.type === "architecture") {
+    const solution = data.solution as { slots: Placements };
+    return {
+      type: answer.type,
+      correct,
+      explanation,
+      correctPlacements: solution.slots,
+    };
+  }
+  const solution = data.solution as {
+    nodes: string[];
+    connections: Connection[];
+  };
   return {
     type: answer.type,
     correct,
     explanation,
-    correctPlacements: solution.slots,
+    correctNodes: solution.nodes,
+    correctConnections: solution.connections,
   };
+}
+
+// The answer as check_answer expects it, without the type tag.
+function toRpcAnswer(answer: Answer) {
+  switch (answer.type) {
+    case "multiple_choice":
+      return { choice: answer.choice };
+    case "architecture":
+      return { placements: answer.placements };
+    case "system_builder":
+      return { nodes: answer.nodes, connections: answer.connections };
+  }
 }
 
 // Saves the lesson as completed. Repeating a done lesson keeps the first

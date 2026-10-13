@@ -8,6 +8,10 @@ import { getCompletedLessonIds, getCourseForRole } from "@/lib/course";
 import { lessonStates, type LessonState } from "@/lib/learning-path";
 import { getCurrentRole } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
+import {
+  isSystemBuilderContent,
+  type SystemBuilderContent,
+} from "@/lib/system-builder";
 
 // What the learner sees. Solutions stay in the database (see check_answer).
 export type MultipleChoiceExercise = {
@@ -20,7 +24,12 @@ export type ArchitectureExercise = ArchitectureContent & {
   id: string;
   type: "architecture";
 };
-export type Exercise = MultipleChoiceExercise | ArchitectureExercise;
+export type SystemBuilderExercise = SystemBuilderContent & {
+  id: string;
+  type: "system_builder";
+};
+export type Exercise =
+  MultipleChoiceExercise | ArchitectureExercise | SystemBuilderExercise;
 
 export type PlayableLesson = {
   id: string;
@@ -70,6 +79,10 @@ async function getExercises(lessonId: string): Promise<Exercise[]> {
     if (type === "architecture" && isArchitectureContent(content)) {
       const { question, scenario, slots, cards, flows } = content;
       return { id, type, question, scenario, slots, cards, flows };
+    }
+    if (type === "system_builder" && isSystemBuilderContent(content)) {
+      const { question, scenario, nodes } = content;
+      return { id, type, question, scenario, nodes };
     }
     throw new Error(`Exercise ${id} has invalid content for type ${type}`);
   });

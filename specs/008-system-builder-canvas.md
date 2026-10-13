@@ -32,19 +32,19 @@ Let learners build a system themselves, like in n8n: they read a use case, drag 
 
 ## Acceptance criteria
 
-- [ ] A user with role Software developers sees the new section on `/learn`; after the RAG lesson, its lesson opens the system builder with the scenario, an empty canvas and all 9 palette nodes.
+- [x] A user with role Software developers sees the new section on `/learn`; after the RAG lesson, its lesson opens the system builder with the scenario, an empty canvas and all 9 palette nodes.
 - [ ] A node can be dragged onto the canvas, moved, and removed back to the palette (its connections go with it); a node can't be added twice.
 - [ ] Connections can be drawn from an output to an input and deleted; self-connections and duplicates are not possible.
 - [ ] The same can be done by tapping on a touch screen and with the keyboard only; screen readers announce added nodes and connections.
 - [ ] "Check" is disabled until at least two nodes and one connection are on the canvas.
 - [ ] The correct nodes and connections show the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
 - [ ] A distractor node, a wrong connection, a reversed connection or a missing connection shows the red panel, marks nodes and connections correct or wrong (icon and color), shows missing connections dashed, and the exercise comes back with an empty canvas before the lesson ends.
-- [ ] The correct nodes and connections are not sent to the browser before the user presses "Check" (checked on the server).
-- [ ] Changing a node name or the scenario in the database shows the new text after a reload.
+- [x] The correct nodes and connections are not sent to the browser before the user presses "Check" (checked on the server).
+- [x] Changing a node name or the scenario in the database shows the new text after a reload.
 - [ ] Multiple-choice and architecture lessons from specs 006 and 007 still work unchanged.
 - [ ] Motion respects `prefers-reduced-motion`.
 - [ ] No horizontal page scroll at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 
