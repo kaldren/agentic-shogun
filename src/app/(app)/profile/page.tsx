@@ -1,4 +1,4 @@
-import { LogOutIcon } from "lucide-react";
+import { CircleCheckBigIcon, LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -7,6 +7,7 @@ import { signOut } from "@/app/auth/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth";
+import { getCompletedLessonCount } from "@/lib/course";
 import { getCurrentRole } from "@/lib/profile";
 import { initials } from "@/lib/utils";
 
@@ -27,7 +28,10 @@ async function ProfileDetails() {
   const user = await getCurrentUser();
   if (!user) redirect("/?next=/profile");
 
-  const role = await getCurrentRole();
+  const [role, completedCount] = await Promise.all([
+    getCurrentRole(),
+    getCompletedLessonCount(),
+  ]);
   if (!role) redirect("/welcome");
 
   const RoleIcon = role.icon;
@@ -70,6 +74,24 @@ async function ProfileDetails() {
         >
           Change role
         </Link>
+      </section>
+
+      <section
+        aria-labelledby="stats-heading"
+        className="bg-card flex items-center gap-4 rounded-2xl border-2 p-5 md:p-6"
+      >
+        <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-green-100 text-green-700">
+          <CircleCheckBigIcon className="size-6" aria-hidden />
+        </span>
+        <div>
+          <h2
+            id="stats-heading"
+            className="text-muted-foreground text-xs font-bold tracking-wider uppercase"
+          >
+            Lessons completed
+          </h2>
+          <p className="text-2xl font-bold">{completedCount}</p>
+        </div>
       </section>
 
       <form action={signOut}>

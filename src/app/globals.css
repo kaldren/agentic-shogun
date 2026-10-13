@@ -24,6 +24,8 @@
   --color-success: oklch(0.748 0.229 137.6);
   --color-danger: oklch(0.626 0.193 23);
   --color-danger-text: oklch(0.541 0.192 25.1);
+  /* Wrong-answer panel, #FFDFE0 (DESIGN.md §6 Learning feedback). */
+  --color-danger-soft: oklch(0.93 0.035 15.7);
   --color-warning: oklch(0.857 0.175 88.5);
   --color-info: oklch(0.718 0.151 237.1);
 

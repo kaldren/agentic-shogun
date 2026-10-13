@@ -1,6 +1,6 @@
 # 006: Lesson player
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -23,21 +23,21 @@ Let learners take a short lesson one exercise at a time, with instant feedback l
 
 ## Acceptance criteria
 
-- [ ] Starting the current lesson from `/learn` opens `/lesson/[id]` with the "X" button, an empty progress bar and the first exercise.
-- [ ] "Check" is disabled until an option is selected.
-- [ ] A correct answer shows the green panel with icon, text and explanation; the progress bar moves forward.
-- [ ] A wrong answer shows the red panel with the correct answer; that exercise appears again before the lesson ends.
-- [ ] After the last correct answer, the "Lesson complete!" screen appears, and "Continue" returns to `/learn`, where the lesson is done and the next one is current.
-- [ ] Progress survives reloads and signing out and in, and is the same on another device or browser.
-- [ ] The exercises shown come from the database: changing a question there shows the new text after a reload.
-- [ ] The correct answers are not sent to the browser before the user presses "Check".
-- [ ] "X" asks for confirmation; confirming returns to `/learn` and the lesson is not marked done.
-- [ ] Opening a locked lesson URL directly redirects to `/learn`.
-- [ ] `/profile` shows the correct number of completed lessons.
-- [ ] A user can't read or change another user's progress (row-level security is on).
-- [ ] The whole lesson works with the keyboard only, and motion respects `prefers-reduced-motion`.
-- [ ] No horizontal scroll at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] Starting the current lesson from `/learn` opens `/lesson/[id]` with the "X" button, an empty progress bar and the first exercise.
+- [x] "Check" is disabled until an option is selected.
+- [x] A correct answer shows the green panel with icon, text and explanation; the progress bar moves forward.
+- [x] A wrong answer shows the red panel with the correct answer; that exercise appears again before the lesson ends.
+- [x] After the last correct answer, the "Lesson complete!" screen appears, and "Continue" returns to `/learn`, where the lesson is done and the next one is current.
+- [x] Progress survives reloads and signing out and in, and is the same on another device or browser.
+- [x] The exercises shown come from the database: changing a question there shows the new text after a reload.
+- [x] The correct answers are not sent to the browser before the user presses "Check".
+- [x] "X" asks for confirmation; confirming returns to `/learn` and the lesson is not marked done.
+- [x] Opening a locked lesson URL directly redirects to `/learn`.
+- [x] `/profile` shows the correct number of completed lessons.
+- [x] A user can't read or change another user's progress (row-level security is on).
+- [x] The whole lesson works with the keyboard only, and motion respects `prefers-reduced-motion`.
+- [x] No horizontal scroll at 360px, 768px and 1280px.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 

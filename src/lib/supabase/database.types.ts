@@ -53,6 +53,72 @@ export type Database = {
         };
         Relationships: [];
       };
+      exercises: {
+        Row: {
+          content: NonNullable<Json>;
+          explanation: string;
+          id: string;
+          lesson_id: string;
+          position: number;
+          solution: NonNullable<Json>;
+          type: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          content: NonNullable<Json>;
+          explanation: string;
+          id?: string;
+          lesson_id: string;
+          position: number;
+          solution: NonNullable<Json>;
+          type: string;
+        };
+        Update: {
+          content?: NonNullable<Json>;
+          explanation?: string;
+          id?: string;
+          lesson_id?: string;
+          position?: number;
+          solution?: NonNullable<Json>;
+          type?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "exercises_lesson_id_fkey";
+            columns: ["lesson_id"];
+            isOneToOne: false;
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      lesson_progress: {
+        Row: {
+          completed_at: string;
+          lesson_id: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          completed_at?: string;
+          lesson_id: string;
+          user_id: string;
+        };
+        Update: {
+          completed_at?: string;
+          lesson_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lesson_progress_lesson_id_fkey";
+            columns: ["lesson_id"];
+            isOneToOne: false;
+            referencedRelation: "lessons";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       lessons: {
         Row: {
           id: string;
@@ -140,7 +206,14 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      check_answer: {
+        Args: { answer: Json; exercise_id: string };
+        Returns: {
+          correct: boolean;
+          explanation: string;
+          solution: Json;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;
