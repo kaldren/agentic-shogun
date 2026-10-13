@@ -1,6 +1,6 @@
 # 006: Lesson player
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
