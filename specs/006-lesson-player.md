@@ -9,7 +9,7 @@ Let learners take a short lesson one exercise at a time, with instant feedback l
 ## Requirements
 
 - `/lesson/[id]` is a full-screen page without the app navigation or site header. At the top: an "X" button to leave and a progress bar showing how many exercises are done.
-- The first exercise type is a multiple-choice quiz: a question, 2–4 answer options as selectable cards, and exactly one correct answer with a short explanation. Exercises are stored in the Supabase database with their lesson (ordered, read-only for users like the rest of the content from spec 005), and the sample lessons get real quiz content (3–5 exercises each) in the seed data.
+- The first exercise type is a multiple-choice quiz: a question, 2–4 answer options as selectable cards, and exactly one correct answer with a short explanation. Exercises are stored in the Supabase database with their lesson (ordered, read-only for users like the rest of the content from spec 005), and the seed data gets the exercises of the two sample lessons in `content/sample-course.md` (added in spec 005).
 - One exercise per screen. A "Check" button at the bottom is enabled once an option is selected.
 - After "Check":
   - Correct: a green bottom panel with a check icon, "Great job!", the explanation and a "Continue" button.
