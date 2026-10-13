@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { safeNextPath } from "@/lib/paths";
 
+import type { Database } from "./database.types";
 import { supabasePublishableKey, supabaseUrl } from "./env";
 
 // Pages that signed-out visitors can open. Everything else needs sign-in.
@@ -18,25 +19,29 @@ function isPublicPath(pathname: string) {
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(supabaseUrl, supabasePublishableKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet, headers) {
-        cookiesToSet.forEach(({ name, value }) =>
-          request.cookies.set(name, value),
-        );
-        response = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
-        );
-        Object.entries(headers).forEach(([key, value]) =>
-          response.headers.set(key, value),
-        );
+  const supabase = createServerClient<Database>(
+    supabaseUrl,
+    supabasePublishableKey,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet, headers) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value),
+          );
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options),
+          );
+          Object.entries(headers).forEach(([key, value]) =>
+            response.headers.set(key, value),
+          );
+        },
       },
     },
-  });
+  );
 
   // Don't run code between createServerClient and getClaims: it refreshes
   // the session if needed.
