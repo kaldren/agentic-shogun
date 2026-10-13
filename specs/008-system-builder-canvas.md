@@ -1,6 +1,6 @@
 # 008: System builder canvas
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
