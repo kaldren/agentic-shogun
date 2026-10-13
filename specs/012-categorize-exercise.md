@@ -1,6 +1,6 @@
 # 012: Categorize exercise
 
-**Status:** Approved
+**Status:** Done
 
 ## Goal
 
@@ -31,18 +31,18 @@ Let learners sort items into groups, e.g. "knowledge in the parameters" vs "know
 
 ## Acceptance criteria
 
-- [ ] The order pipeline lesson shows the categorize exercise after the system builder exercise, with all 5 chips in the pool and 2 empty buckets.
-- [ ] Chips can be dragged into buckets, moved between buckets and back to the pool with a mouse and on a touch screen.
-- [ ] The same works by tapping and with the keyboard only, and screen readers announce each placement.
-- [ ] "Check" is disabled until every chip is placed.
-- [ ] Correct buckets show the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
-- [ ] A wrong placement marks each chip right or wrong (icon and color), shows the correct bucket for wrong chips and the red panel, and the exercise comes back with all chips in the pool before the lesson ends.
-- [ ] The correct buckets are not sent to the browser before the user presses "Check".
-- [ ] Changing an item or bucket label in the database shows the new text after a reload.
-- [ ] Exercises from specs 006–008 still work unchanged, and resuming a lesson (spec 009) works with the new type.
-- [ ] Motion respects `prefers-reduced-motion`.
-- [ ] No horizontal page scroll at 360px, 768px and 1280px.
-- [ ] `pnpm lint` and `pnpm typecheck` pass.
+- [x] The order pipeline lesson shows the categorize exercise after the system builder exercise, with all 5 chips in the pool and 2 empty buckets.
+- [x] Chips can be dragged into buckets, moved between buckets and back to the pool with a mouse and on a touch screen.
+- [x] The same works by tapping and with the keyboard only, and screen readers announce each placement.
+- [x] "Check" is disabled until every chip is placed.
+- [x] Correct buckets show the green panel with the explanation; the progress bar moves forward and the lesson can be completed.
+- [x] A wrong placement marks each chip right or wrong (icon and color), shows the correct bucket for wrong chips and the red panel, and the exercise comes back with all chips in the pool before the lesson ends.
+- [x] The correct buckets are not sent to the browser before the user presses "Check".
+- [x] Changing an item or bucket label in the database shows the new text after a reload.
+- [x] Exercises from specs 006–008 still work unchanged, and resuming a lesson (spec 009) works with the new type.
+- [x] Motion respects `prefers-reduced-motion`.
+- [x] No horizontal page scroll at 360px, 768px and 1280px.
+- [x] `pnpm lint` and `pnpm typecheck` pass.
 
 ## Out of scope
 
