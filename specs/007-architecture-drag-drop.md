@@ -1,6 +1,6 @@
 # 007: Architecture drag and drop
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
