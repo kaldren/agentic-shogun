@@ -1,6 +1,6 @@
 # 004: App shell and navigation
 
-**Status:** Draft
+**Status:** Approved
 
 ## Goal
 
